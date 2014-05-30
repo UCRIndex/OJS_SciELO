@@ -1,0 +1,543 @@
+<?php
+
+/**
+ * @file plugins/importexport/ojs2scielo/ojs2scieloExportDomM.inc.php
+ *
+ * Copyright (c) 2013-2014 Simon Fraser University Library
+ * Copyright (c) 2003-2014 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * @class ojs2scieloExportDom
+ * @ingroup plugins_importexport_native
+ *
+ * @brief import/export plugin DOM functions for export
+ * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
+ */
+
+
+import('lib.pkp.classes.xml.XMLCustomWriter');
+
+define('NATIVE_DTD_URL', 'http://pkp.sfu.ca/ojs/dtds/2.3/native.dtd');
+define('NATIVE_DTD_ID', '-//PKP//OJS Articles and Issues XML//EN');
+
+/*
+ * Clase encargada de crear el XML mediante la clase XMLCustomWriter, recopilar la información necesaria y exportar el XML correspondiente a SciELO.
+ */
+
+class ojs2scieloExportDomM {
+
+	function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = null) {	
+		// Crear el documento con el respectivo DTD y URL definidos al inicio de la clase.
+		$doc =& XMLCustomWriter::createDocument('article', NATIVE_DTD_ID, NATIVE_DTD_URL);
+		
+		// Nodo: article y sus respectivos atributos.
+		$header =& XMLCustomWriter::createElement($doc, 'article');
+		XMLCustomWriter::setAttribute($header, 'xmlns:xlink', 'addurl');
+		XMLCustomWriter::setAttribute($header, 'xmlns:mml', 'addmml');
+		XMLCustomWriter::setAttribute($header, 'dtd-version', '3.0');
+		XMLCustomWriter::setAttribute($header, 'article-type', 'addtype');
+		XMLCustomWriter::setAttribute($header, 'xml:lang', $article->getLanguage());
+		XMLCustomWriter::appendChild($doc, $header);
+		
+		// Agrega el nodo "front" y sus respectivos hijos.
+		ojs2scieloExportDomM::addFrontNode($journal, $article, $doc, $header);
+		
+		// Agrega el nodo "body" y sus respectivos hijos.
+		ojs2scieloExportDomM::addBodyNode($article, $doc, $header);
+		
+		// Agrega el nodo "back" y sus respectivos hijos.
+		ojs2scieloExportDomM::addBackNode($article, $doc, $header);
+		
+		// Exporta el archivo final para que el usuario pueda proceder a descargarlo.
+		ojs2scieloExportDomM::exportXML($article, $doc, $outputFile);
+	}
+	
+	/*
+	 * Agrega el nodo "front" y sus hijos al documento.
+	 */
+	private function addFrontNode(&$journal, &$article, &$doc, &$header) {
+		// Nodo: front.
+		$frontNode =& XMLCustomWriter::createElement($doc, 'front');
+		XMLCustomWriter::appendChild($header, $frontNode);
+
+		// Nodo: journal-meta.
+		$journalMetaNode =& XMLCustomWriter::createElement($doc, 'journal-meta');
+		XMLCustomWriter::appendChild($frontNode, $journalMetaNode);
+
+		// Nodo: journal-id.
+		$journalIDNode =& XMLCustomWriter::createChildWithText($doc, $journalMetaNode, 'journal-id', $journal->getJournalId(), false);
+		XMLCustomWriter::setAttribute($journalIDNode, 'journal-id-type', 'nlm-ta');
+
+		// Nodo: journal-title-group.
+		$journalTitleGroupNode =& XMLCustomWriter::createElement($doc, 'journal-title-group');
+		XMLCustomWriter::appendChild($journalMetaNode, $journalTitleGroupNode);
+
+		// Nodo: journal-title.
+		$journalTitleNode =& XMLCustomWriter::createChildWithText($doc, $journalTitleGroupNode, 'journal-title', $journal->getLocalizedTitle(), false);
+		
+		// Se puede agregar una traducción para el título (esto tiene que ver con las opciones de cada revista).
+		
+		// Nodo: abbrev-journal-title.
+		$abbrevJournalTitleNode =& XMLCustomWriter::createChildWithText($doc, $journalTitleGroupNode, 'abbrev-journal-title', $journal->getLocalizedInitials(), false);
+		XMLCustomWriter::setAttribute($abbrevJournalTitleNode, 'abbrev-type', 'publisher');
+		
+		// Nodo: issn (consulta varios ISSN).
+		if ($journal->getSetting('printIssn') != '') $issn = $journal->getSetting('printIssn');
+		elseif ($journal->getSetting('issn') != '') $issn = $journal->getSetting('issn');
+		elseif ($journal->getSetting('onlineIssn') != '') $issn = $journal->getSetting('onlineIssn');
+		else $issn = '';
+		$issnNode =& XMLCustomWriter::createChildWithText($doc, $journalMetaNode, 'issn', $issn, false);
+		XMLCustomWriter::setAttribute($issnNode, 'pub-type', 'ppub');
+		
+		// Nodo: publisher.
+		$publisherNode =& XMLCustomWriter::createElement($doc, 'publisher');
+		XMLCustomWriter::appendChild($journalMetaNode, $publisherNode);
+
+		// Nodo: publisher-name.
+		$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'addpublisher-name', false); // No se puede obtener de la clase "PublishedArticle.inc.php"
+		
+		// Nodo: article-meta.
+		$articleMetaNode =& XMLCustomWriter::createElement($doc, 'article-meta');
+		XMLCustomWriter::appendChild($frontNode, $articleMetaNode);
+		
+		// Nodo: article-id, publisher-id.
+		$publisherIDNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'article-id', $article->getPublishedArticleId(), false);
+		XMLCustomWriter::setAttribute($publisherIDNode, 'pub-id-type', 'publisher-id');
+		
+		// Nodo: article-id, doi.
+		$publisherIDNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'article-id', 'adddoi', false);
+		XMLCustomWriter::setAttribute($publisherIDNode, 'pub-id-type', 'doi');
+		
+		// Nodo: article-categories.
+		$articleCategoriesNode =& XMLCustomWriter::createElement($doc, 'article-categories');
+		XMLCustomWriter::appendChild($articleMetaNode, $articleCategoriesNode);
+		
+		// Nodo: subj-group.
+		$subjectGroupNode =& XMLCustomWriter::createElement($doc, 'subj-group');
+		XMLCustomWriter::setAttribute($subjectGroupNode, 'subj-group-type', 'heading');
+		XMLCustomWriter::appendChild($articleCategoriesNode, $subjectGroupNode);
+		
+		// Nodo: subject.
+		$subjectNode =& XMLCustomWriter::createChildWithText($doc, $subjectGroupNode, 'subject', 'addsubject', false);
+		
+		// Nodo: title-group.
+		$titleGroupNode =& XMLCustomWriter::createElement($doc, 'title-group');
+		XMLCustomWriter::appendChild($articleMetaNode, $titleGroupNode);
+		
+		// Nodo(s): article-title.
+		if (is_array($article->getTitle(null))) foreach ($article->getTitle(null) as $locale => $title) {
+			if($article->getLocale() == $locale) {
+				$titleNode =& XMLCustomWriter::createChildWithText($doc, $titleGroupNode, 'article-title', $title, false);
+				$lang = substr($locale, 0, 2); // Manejo de string para obtener el idioma (ejemplo: $locale = es_ES; resultado: es).
+				XMLCustomWriter::setAttribute($titleNode, 'xml:lang', $lang);
+				unset($titleNode);
+				unset($lang);
+			} else {
+				$transTitleGroupNode =& XMLCustomWriter::createElement($doc, 'trans-title-group');
+				$lang = substr($locale, 0, 2); // Manejo de string para obtener el idioma (ejemplo: $locale = es_ES; resultado: es).
+				XMLCustomWriter::setAttribute($transTitleGroupNode, 'xml:lang', $lang);
+				XMLCustomWriter::appendChild($titleGroupNode, $transTitleGroupNode);
+				$transTitleNode =& XMLCustomWriter::createChildWithText($doc, $transTitleGroupNode, 'trans-title', $title, false);
+				unset($transTitleGroupNode);
+				unset($transTitleNode);
+				unset($lang);
+			}
+		}
+		
+		// Nodo: contrib-group.
+		$contribGroupNode =& XMLCustomWriter::createElement($doc, 'contrib-group');
+		XMLCustomWriter::appendChild($articleMetaNode, $contribGroupNode);
+		
+		// Autores.
+		$i = 1;
+		foreach ($article->getAuthors() as $author) {
+			// Nodo: contrib.
+			$contribNode =& XMLCustomWriter::createElement($doc, 'contrib');
+			XMLCustomWriter::setAttribute($contribNode, 'contrib-type', 'author');
+			XMLCustomWriter::appendChild($contribGroupNode, $contribNode);
+			
+			// Nodo: name.
+			$nameNode =& XMLCustomWriter::createElement($doc, 'name');
+			XMLCustomWriter::appendChild($contribNode, $nameNode);
+			
+			// Nodo: surname.
+			$surnameNode =& XMLCustomWriter::createChildWithText($doc, $nameNode, 'surname', $author->getFirstName(), false);
+			
+			// Nodo: given-names.
+			$givenNamesNode =& XMLCustomWriter::createChildWithText($doc, $nameNode, 'given-names', $author->getLastName(), false);
+			
+			// Nodo: xref.
+			$rid = "aff" . $i; // "aff + #"
+			$affLinkNode =& XMLCustomWriter::createChildWithText($doc, $contribNode, 'xref', $i, false);
+			XMLCustomWriter::setAttribute($affLinkNode, 'ref-type', 'aff');
+			XMLCustomWriter::setAttribute($affLinkNode, 'rid', $rid);
+			
+			$i++;
+			
+			unset($authorNode);
+			unset($contribNode);
+			unset($nameNode);
+			unset($surnameNode);
+			unset($givenNamesNode);
+			unset($affLinkNode);
+		}
+
+		$j = 1;
+		foreach ($article->getAuthors() as $author) {
+			// Nodo: aff.
+			$affGroupNode =& XMLCustomWriter::createElement($doc, 'aff');
+			$affid = "aff" . $j; // $affid + $j: enlazan el grupo de autor con su correspondiente afiliación. Es decir, el primer autor deberá tener como etiqueta 1 y el atributo del nodo $affGroupNode: 'aff1', el segudo etiqueta 2 y atributo 'aff2', etc.
+			XMLCustomWriter::setAttribute($affGroupNode, 'id', $affid);
+			XMLCustomWriter::appendChild($articleMetaNode, $affGroupNode);
+
+			// Nodo: label.
+			$labelNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'label', $j, false);
+		
+			// Obtiene las afiliaciones de cada autor.
+			$affiliations = $author->getAffiliation(null);
+
+			$i = 0;
+
+			// Itera sobre las afiliaciones de cada autor.
+			if (is_array($affiliations)) foreach ($affiliations as $locale => $affiliation) {
+				$i++;
+				$orgDiv = "orgdiv" . $i; // "orgdiv + #"
+
+				// Nodo: orgdiv.
+				$orgDivNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'institution', $affiliation, false);
+				XMLCustomWriter::setAttribute($orgDivNode, 'content-type', $orgDiv);
+				
+				// Nodo: orgname.
+				$orgNameNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'institution', $affiliation, false);
+				XMLCustomWriter::setAttribute($orgNameNode, 'content-type', 'orgname');
+
+				unset($orgDivNode);
+				unset($orgNameNode);
+			}
+		
+			// Nodo: zipcode.
+			$zipCodeNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', 'addzipcode', false);
+			XMLCustomWriter::setAttribute($zipCodeNode, 'content-type', 'zipcode');
+		
+			// Nodo: city.
+			$cityNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', 'addcity', false);
+			XMLCustomWriter::setAttribute($cityNode, 'content-type', 'city');
+		
+			// Nodo: state
+			$stateNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', 'addstate', false);
+			XMLCustomWriter::setAttribute($stateNode, 'content-type', 'state');
+		
+			// Nodo: addr-line.
+			$addrNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'addr-line', 'addaddr-line', false);
+		
+			// Nodo: country.
+			$countryNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'country', $author->getCountry(), false);
+		
+			// Nodo: email.
+			$institutionalEmailNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'email', $author->getEmail(), false);
+
+			$j++;
+
+			unset($affGroupNode);
+			unset($labelNode);
+			unset($zipCodeNode);
+			unset($cityNode);
+			unset($stateNode);
+			unset($addrNode);
+			unset($countryNode);
+			unset($institutionalEmailNode);	
+		}
+		
+		// Nodo: author-notes.
+		$authorNotesNode =& XMLCustomWriter::createElement($doc, 'author-notes');
+		XMLCustomWriter::appendChild($articleMetaNode, $authorNotesNode);
+		
+		// Nodo: corresp.
+		$correspNode =& XMLCustomWriter::createElement($doc, 'corresp');
+		XMLCustomWriter::appendChild($authorNotesNode, $correspNode);
+		
+		// Nodo: bold.
+		$boldNode =& XMLCustomWriter::createChildWithText($doc, $correspNode, 'bold', 'Correspondence', false);
+		
+		// Nodo: personal email.
+		$personalEmailNode =& XMLCustomWriter::createChildWithText($doc, $correspNode, 'email', 'addemail', false);
+		
+		// Nodo: pub-date.
+		$pubDateNode =& XMLCustomWriter::createElement($doc, 'pub-date');
+		XMLCustomWriter::setAttribute($pubDateNode, 'pub-type', 'epub-ppub');
+		XMLCustomWriter::appendChild($articleMetaNode, $pubDateNode);
+		
+		// Nodo: season.
+		$m = date('m', strtotime($article->getDatePublished())); // Obtiene el mes de la publicación.
+
+		// Se transforma el número correspondiente al año a sus iniciales para obtener $season.
+		switch ($m) {
+    		case 1:
+        		$season = "Jan";
+        	break;
+    		case 2:
+        		$season = "Feb";
+        	break;
+    		case 3:
+        		$season = "Mar";
+        	break;
+        	case 4:
+        		$season = "Apr";
+        	break;
+        	case 5:
+        		$season = "May";
+        	break;
+        	case 6:
+        		$season = "Jun";
+        	break;
+        	case 7:
+        		$season = "Jul";
+        	break;
+        	case 8:
+        		$season = "Aug";
+        	break;
+        	case 9:
+        		$season = "Sep";
+        	break;
+        	case 10:
+        		$season = "Oct";
+        	break;
+        	case 11:
+        		$season = "Nov";
+        	break;
+        	case 12:
+        		$season = "Dic";
+        	break;
+        	default:
+        		$season = "";
+        	break;
+		}
+
+		$seasonNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'season', $season, false);
+		
+		// Nodo: year.
+		$year = date('Y', strtotime($article->getDatePublished())); // Obtiene el año de la publicación.
+		$yearNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'year', $year, false);
+		
+		// Nodo: volume.
+		$volumeNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'volume', 'addvolume', false);
+		
+		// Nodo: issue.
+		$issueNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'issue', 'addissue', false);
+		
+		// Nodo: fpage.
+		$fPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'fpage', 'addfpage', false);
+		
+		// Nodo: lpage.
+		$lPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'lpage', 'addlpage', false);
+		
+		// Nodo: history.
+		$historyNode =& XMLCustomWriter::createElement($doc, 'history');
+		XMLCustomWriter::appendChild($articleMetaNode, $historyNode);
+		
+		// Nodo: date-type received.
+		$dateTypeRecivedNode =& XMLCustomWriter::createElement($doc, 'date');
+		XMLCustomWriter::setAttribute($dateTypeRecivedNode, 'date-type', 'received');
+		XMLCustomWriter::appendChild($historyNode, $dateTypeRecivedNode);
+		
+		// Nodo: day received.
+		$dayRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'day', 'addday', false);
+		
+		// Nodo: month received.
+		$monthRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'month', 'addmonth', false);
+		
+		// Nodo: year received.
+		$yearRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'year', 'addyear', false);
+		
+		// Nodo: date-type accepted.
+		$dateTypeAcceptedNode =& XMLCustomWriter::createElement($doc, 'date');
+		XMLCustomWriter::setAttribute($dateTypeAcceptedNode, 'date-type', 'accepted');
+		XMLCustomWriter::appendChild($historyNode, $dateTypeAcceptedNode);
+		
+		// Nodo: day accepted.
+		$dayAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'day', 'addday', false);
+		
+		// Nodo: month accepted.
+		$monthAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'month', 'addmonth', false);
+		
+		// Nodo: year accepted.
+		$yearAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'year', 'addyear', false);
+		
+		// Nodo: permissions.
+		$permissionsNode =& XMLCustomWriter::createElement($doc, 'permissions');
+		XMLCustomWriter::appendChild($articleMetaNode, $permissionsNode);
+		
+		// Nodo: license.
+		$licenseNode =& XMLCustomWriter::createElement($doc, 'license');
+		XMLCustomWriter::setAttribute($licenseNode, 'license-type', 'addlicensetype');
+		XMLCustomWriter::setAttribute($licenseNode, 'xlink:href', 'addhref');
+		XMLCustomWriter::appendChild($permissionsNode, $licenseNode);
+		
+		// Nodo: license-p.
+		$licensePNode =& XMLCustomWriter::createChildWithText($doc, $licenseNode, 'license-p', 'addlicense-p', false);
+		
+		// Nodo: abstract.
+		$abstractNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'abstract', 'addabstract', false);
+		XMLCustomWriter::setAttribute($abstractNode, 'xml:lang', 'addlang');
+		
+		// Dentro del nodo abstract se deberán crear los nodos correspondientes para el título y los párrafos. No los agrego aún porque dependen del tipo de abstact.
+		// Además puede agregarse un nodo con la traducción. Esto debe agregarse luego porque depende de cada archivo y la información que se brinde con el documento.
+		
+		// Nodo: kwd-group.
+		$kwdGroupNode =& XMLCustomWriter::createElement($doc, 'kwd-group');
+		XMLCustomWriter::setAttribute($kwdGroupNode, 'xml:lang', 'addlanguage');
+		XMLCustomWriter::appendChild($articleMetaNode, $kwdGroupNode);
+		
+		// Para cada palabra clave debe agregarse un nodo. Además pueden incluírse traducciones en cuyo caso se debe crear otro nodo "kwd-group" con su respectivo atrributo y un nodo para cada palabra.
+		
+		// Nodo: funding-group.
+		$fundingGroupNode =& XMLCustomWriter::createElement($doc, 'funding-group');
+		XMLCustomWriter::appendChild($articleMetaNode, $fundingGroupNode);
+		
+		// Nodo: award-group.
+		$awardGroupNode =& XMLCustomWriter::createElement($doc, 'award-group');
+		XMLCustomWriter::appendChild($fundingGroupNode, $awardGroupNode);
+		
+		// Nodo: funding-source.
+		$fundingSourceNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'funding-source', 'addfunding-source', false);
+		
+		// Nodo: award-id.
+		$awardIDNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'award-id', 'addaward-id', false);
+		
+		// Nodo: counts.
+		$countsNode =& XMLCustomWriter::createElement($doc, 'counts');
+		XMLCustomWriter::appendChild($articleMetaNode, $countsNode);
+		
+		// Nodo: fig-count.
+		$figCountNode =& XMLCustomWriter::createElement($doc, 'fig-count');
+		XMLCustomWriter::setAttribute($figCountNode, 'count', 'addcount');
+		XMLCustomWriter::appendChild($countsNode, $figCountNode);
+		
+		// Nodo: table-count.
+		$tableCountNode =& XMLCustomWriter::createElement($doc, 'table-count');
+		XMLCustomWriter::setAttribute($tableCountNode, 'count', 'addcount');
+		XMLCustomWriter::appendChild($countsNode, $tableCountNode);
+		
+		// Nodo: ref-count.
+		$refCountNode =& XMLCustomWriter::createElement($doc, 'ref-count');
+		XMLCustomWriter::setAttribute($refCountNode, 'count', 'addcount');
+		XMLCustomWriter::appendChild($countsNode, $refCountNode);
+		
+		// Nodo: page-count.
+		$pageCountNode =& XMLCustomWriter::createElement($doc, 'page-count');
+		XMLCustomWriter::setAttribute($pageCountNode, 'count', 'addcount');
+		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
+	}
+	
+	/*
+	 * Agrega el nodo "body" al documento (los nodos dentro de "body" dependerán de cada documento por lo tanto deberá modificarse esta función cuando se obtengan las secciones del archivo).
+	 */
+	private function addBodyNode(&$article, &$doc, &$header) {
+		// Nodo: body
+		$bodyNode =& XMLCustomWriter::createElement($doc, 'body');
+		XMLCustomWriter::appendChild($header, $bodyNode);
+		
+		// Agregar acá los nodos correspondientes al cuerpo del artículo.
+	}
+	
+	/*
+	 * Agrega el nodo "back" y sus hijos al documento (algunos nodos deberán ser replicados, por ejemplo el grupo de ref-list; esto dependerá de cada archivo y deberá ser modificado en su momento).
+	 */
+	private function addBackNode(&$article, &$doc, &$header) {
+		// Nodo: back
+		$backNode =& XMLCustomWriter::createElement($doc, 'back');
+		XMLCustomWriter::appendChild($header, $backNode);
+		
+		// Nodo: ack
+		$ackNode =& XMLCustomWriter::createElement($doc, 'ack');
+		XMLCustomWriter::appendChild($backNode, $ackNode);
+		
+		// Nodo: sec
+		$secAckNode =& XMLCustomWriter::createElement($doc, 'sec');
+		XMLCustomWriter::appendChild($ackNode, $secAckNode);
+		
+		// Nodo: title
+		$titleSecNode =& XMLCustomWriter::createChildWithText($doc, $secAckNode, 'title', 'ACKNOWLEDGMENTS', false);
+		
+		// Nodo: p (párrafo de agradecimientos)
+		$pNode =& XMLCustomWriter::createChildWithText($doc, $secAckNode, 'p', 'addacknowledgments', false);
+		
+		// Nodo: ref-list (repetir para cada referencia)
+		$refListNode =& XMLCustomWriter::createElement($doc, 'ref-list');
+		XMLCustomWriter::appendChild($backNode, $refListNode);
+		
+		// Nodo: title
+		$titleSecNode =& XMLCustomWriter::createChildWithText($doc, $refListNode, 'title', 'REFERENCES', false);
+		
+		// Nodo: ref
+		$refNode =& XMLCustomWriter::createElement($doc, 'ref');
+		XMLCustomWriter::setAttribute($refNode, 'id', 'addid');
+		XMLCustomWriter::appendChild($refListNode, $refNode);
+		
+		// Nodo: label
+		$labelNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'label', 'addlabel', false);
+		
+		// Nodo: element-citation
+		$elementCitationNode =& XMLCustomWriter::createElement($doc, 'element-citation');
+		XMLCustomWriter::setAttribute($elementCitationNode, 'publication-type', 'journal');
+		XMLCustomWriter::appendChild($refNode, $elementCitationNode);
+		
+		// Nodo: person-group
+		$personGroupNode =& XMLCustomWriter::createElement($doc, 'person-group');
+		XMLCustomWriter::setAttribute($personGroupNode, 'person-group-type', 'author');
+		XMLCustomWriter::appendChild($elementCitationNode, $personGroupNode);
+		
+		// Nodo: name (repetir para todos los autores)
+		$nameRefNode =& XMLCustomWriter::createElement($doc, 'name');
+		XMLCustomWriter::appendChild($personGroupNode, $nameRefNode);
+		
+		// Nodo: surname
+		$surnameRefNode =& XMLCustomWriter::createChildWithText($doc, $nameRefNode, 'surname', 'addsurname', false);
+		
+		// Nodo: given-names
+		$givenNamesRefNode =& XMLCustomWriter::createChildWithText($doc, $nameRefNode, 'given-names', 'addgiven-names', false);
+		
+		// Nodo: article-title
+		$articleTitleRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'article-title', 'addarticle-title', false);
+		XMLCustomWriter::setAttribute($articleTitleRefNode, 'xml:lang', 'addlang');
+		
+		// Nodo: source
+		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'source', 'addsource', false);
+		XMLCustomWriter::setAttribute($sourceRefNode, 'xml:lang', 'addlang');
+		
+		// Nodo: year
+		$yearRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'year', 'addyear', false);
+		
+		// Nodo: volume
+		$volumeRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'volume', 'addvolume', false);
+		
+		// Nodo: fpage
+		$fpageRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'fpage', 'addfpage', false);
+		
+		// Nodo: lpage
+		$lpageRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'lpage', 'addlpage', false);
+		
+		// Nodo: mixed-citation
+		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'mixed-citation', 'addmixed-citation', false);
+	}
+	
+	/*
+	 * Se encarga de exportar el archivo luego de que sus nodos fueron creados.
+	 */
+	private function exportXML(&$article, &$doc, $outputFile = null) {
+		// Generar el archivo XML.
+		if (!empty($outputFile)) {
+			if (($h = fopen($outputFile, 'w'))===false) return false;
+			fwrite($h, XMLCustomWriter::getXML($doc));
+			fclose($h);
+		} else {
+			header("Content-Type: application/xml");
+			header("Cache-Control: private");
+			// Nombre y extensión del archivo.
+			header("Content-Disposition: attachment; filename=\"article-" . $article->getId() . ".xml\"");
+			XMLCustomWriter::printXML($doc);
+		}
+	}
+}
+
+?>

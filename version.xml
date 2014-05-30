@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE version SYSTEM "../../../lib/pkp/dtd/pluginVersion.dtd">
+
+<!--
+  * plugins/importexport/nativem/version.xml
+  *
+  * Copyright (c) 2013-2014 Simon Fraser University Library
+  * Copyright (c) 2003-2014 John Willinsky
+  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  *
+  * Plugin version information.
+  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
+  -->
+<version>
+	<application>ojs2scielo</application>
+	<type>plugins.importexport</type>
+	<release>0.0.0.1</release>
+	<date>2014-03-14</date>
+</version>
