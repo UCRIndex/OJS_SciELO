@@ -1,5 +1,5 @@
 {**
- * plugins/importexport/nativem/importError.tpl
+ * plugins/importexport/ojs2scielo/importError.tpl
  *
  * Copyright (c) 2013-2014 Simon Fraser University Library
  * Copyright (c) 2003-2014 John Willinsky
@@ -9,11 +9,11 @@
  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
  *}
 {strip}
-{assign var="pageTitle" value="plugins.importexport.nativem.import.error"}
+{assign var="pageTitle" value="plugins.importexport.ojs2scielo.import.error"}
 {include file="common/header.tpl"}
 {/strip}
 <div id="importError">
-<p>{translate key="plugins.importexport.nativem.import.error.description"}</p>
+<p>{translate key="plugins.importexport.ojs2scielo.import.error.description"}</p>
 {if $error}
 	<!-- A single error occurred. -->
 	<p>{translate key=$error}</p>

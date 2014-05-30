@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-  * plugins/importexport/nativem/ojs1-to-ojs2.xsl
+  * plugins/importexport/ojs2scielo/ojs1-to-ojs2.xsl
   *
   * Copyright (c) 2013-2014 Simon Fraser University Library
   * Copyright (c) 2003-2014 John Willinsky

@@ -32,7 +32,7 @@ class ojs2scieloImportExportPlugin extends ImportExportPlugin {
 	 * Display the command-line usage information
 	 */
 	function usage($scriptName) {
-		echo __('plugins.importexport.nativem.cliUsage', array(
+		echo __('plugins.importexport.ojs2scielo.cliUsage', array(
 			'scriptName' => $scriptName,
 			'pluginName' => $this->getName()
 		)) . "\n";
@@ -48,11 +48,11 @@ class ojs2scieloImportExportPlugin extends ImportExportPlugin {
 	}
 
 	function getDisplayName() {
-		return __('plugins.importexport.nativem.displayName');
+		return __('plugins.importexport.ojs2scielo.displayName');
 	}
 
 	function getDescription() {
-		return __('plugins.importexport.nativem.description');
+		return __('plugins.importexport.ojs2scielo.description');
 	}
 	
 	function &getDocument($fileName) {

@@ -1,5 +1,5 @@
 {**
- * plugins/importexport/native/articleContext.tpl
+ * plugins/importexport/ojs2scielo/articleContext.tpl
  *
  * Copyright (c) 2013-2014 Simon Fraser University Library
  * Copyright (c) 2003-2014 John Willinsky
@@ -9,11 +9,11 @@
  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
  *}
 {strip}
-{assign var="pageTitle" value="plugins.importexport.nativem.import.articles"}
+{assign var="pageTitle" value="plugins.importexport.ojs2scielo.import.articles"}
 {include file="common/header.tpl"}
 {/strip}
 
-<p>{translate key="plugins.importexport.nativem.import.articles.description"}</p>
+<p>{translate key="plugins.importexport.ojs2scielo.import.articles.description"}</p>
 <div id="articleContext">
 <form action="{plugin_url path="import"}" method="post">
 <input type="hidden" name="temporaryFileId" value="{$temporaryFileId|escape}"/>

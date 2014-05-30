@@ -1,5 +1,5 @@
 {**
- * plugins/importexport/nativem/issues.tpl
+ * plugins/importexport/ojs2scielo/issues.tpl
  *
  * Copyright (c) 2013-2014 Simon Fraser University Library
  * Copyright (c) 2003-2014 John Willinsky
@@ -9,8 +9,8 @@
  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
  *}
 {strip}
-{assign var="pageTitle" value="plugins.importexport.nativem.selectIssue"}
-{assign var="pageCrumbTitle" value="plugins.importexport.nativem.selectIssue"}
+{assign var="pageTitle" value="plugins.importexport.ojs2scielo.selectIssue"}
+{assign var="pageCrumbTitle" value="plugins.importexport.ojs2scielo.selectIssue"}
 {include file="common/header.tpl"}
 {/strip}
 

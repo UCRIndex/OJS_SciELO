@@ -1,5 +1,5 @@
 {**
- * plugins/importexport/nativem/importSuccess.tpl
+ * plugins/importexport/ojs2scielo/importSuccess.tpl
  *
  * Copyright (c) 2013-2014 Simon Fraser University Library
  * Copyright (c) 2003-2014 John Willinsky
@@ -9,11 +9,11 @@
  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
  *}
 {strip}
-{assign var="pageTitle" value="plugins.importexport.nativem.import.success"}
+{assign var="pageTitle" value="plugins.importexport.ojs2scielo.import.success"}
 {include file="common/header.tpl"}
 {/strip}
 <div id="importSuccess">
-<p>{translate key="plugins.importexport.nativem.import.success.description"}</p>
+<p>{translate key="plugins.importexport.ojs2scielo.import.success.description"}</p>
 
 {if $issues}
 <h3>{translate key="issue.issues"}</h3>
