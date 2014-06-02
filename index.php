@@ -16,8 +16,10 @@
  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
  */
 
+//Se busca en el directorio del plugin al archivo ojs2scieloImportExportPlugin.inc.php
 require_once('ojs2scieloImportExportPlugin.inc.php');
 
+//La funcionalidad del plugin inicia con la invocación al constructor de la clase Ojs2ScieloImportExportPlugin
 return new Ojs2ScieloImportExportPlugin();
 
 

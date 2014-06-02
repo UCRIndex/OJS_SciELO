@@ -39,18 +39,28 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 	}
 
 	/**
-	 * Get the name of this plugin. The name must be unique within
-	 * its category.
-	 * @return String name of plugin
+	 * Obtiene el nombre del plugin.
+	 * Este nombre debe ser único dentro de su categoría
+	 * @return String nombre del plugin
 	 */
 	function getName() {
 		return 'ojs2scieloImportExportPlugin';
 	}
 
+	/**
+	 * Obtiene el nombre que se despliega en la página de Importar/exportar datos
+	 * Dicho nombre se obtiene del archivo locale correspondiente, buscado con la clave entre paréntesis
+	 * @return String nombre del plugin
+	 * */
 	function getDisplayName() {
 		return __('plugins.importexport.ojs2scielo.displayName');
 	}
 
+	/**
+	 * Obtiene la descripción que se despliega en la página de Importar/exportar datos
+	 * Dicha descripción se obtiene del archivo locale correspondiente, buscado con la clave entre paréntesis
+	 * @return String nombre del plugin
+	 * */
 	function getDescription() {
 		return __('plugins.importexport.ojs2scielo.description');
 	}
@@ -66,11 +76,12 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 	}
 	
 	/*
-	 * Función encargada de mostrar el listado de opciones del plugin. Desde acá se pueden exportar números completos y artículos mediante la clase NativeExportDomM.
+	 * Función encargada de mostrar el listado de opciones del plugin.
+	 * Desde acá se pueden exportar números completos y artículos mediante la clase Ojs2ScieloExportDom
 	 */
 	function display(&$args) {
 
-		$this->import('ojs2scieloExportDom');
+		$this->import('Ojs2scieloExportDom');
 		$templateMgr =& TemplateManager::getManager();
 		parent::display($args);
 		$issueDao =& DAORegistry::getDAO('IssueDAO');
@@ -80,7 +91,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 			case 'exportArticle':
 				$articleIds = array(array_shift($args));
 				$result = array_shift(ArticleSearch::formatResults($articleIds));
-				ojs2scieloExportDom::exportArticle($journal, $result['issue'], $result['section'], $result['publishedArticle']);
+				Ojs2ScieloExportDom::exportArticle($journal, $result['issue'], $result['section'], $result['publishedArticle']);
 				break;
 			case 'articles':
 				// Muestra la lista de los artículos de cada revista
