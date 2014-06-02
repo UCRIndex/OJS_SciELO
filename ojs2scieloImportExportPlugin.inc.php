@@ -7,14 +7,14 @@
  * Copyright (c) 2003-2014 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * @class ojs2scieloImportExportPluginM
+ * @class Ojs2ScieloImportExportPlugin
  * @ingroup plugins_importexport_native,
  *
  * @brief import/export plugin
  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
  */
 
-class ojs2scieloImportExportPlugin extends ImportExportPlugin {
+class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 
 	/**
 	 * Called as a plugin is registered to the registry

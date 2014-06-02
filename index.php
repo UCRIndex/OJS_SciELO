@@ -18,7 +18,7 @@
 
 require_once('ojs2scieloImportExportPlugin.inc.php');
 
-return new ojs2scieloImportExportPlugin();
+return new Ojs2ScieloImportExportPlugin();
 
 
 

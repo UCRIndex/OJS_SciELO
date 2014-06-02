@@ -7,7 +7,7 @@
  * Copyright (c) 2003-2014 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * @class ojs2scieloExportDom
+ * @class Ojs2ScieloExportDomM
  * @ingroup plugins_importexport_native
  *
  * @brief import/export plugin DOM functions for export
@@ -24,7 +24,7 @@ define('NATIVE_DTD_ID', '-//PKP//OJS Articles and Issues XML//EN');
  * Clase encargada de crear el XML mediante la clase XMLCustomWriter, recopilar la información necesaria y exportar el XML correspondiente a SciELO.
  */
 
-class ojs2scieloExportDomM {
+class Ojs2ScieloExportDomM {
 
 	function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = null) {	
 		// Crear el documento con el respectivo DTD y URL definidos al inicio de la clase.
