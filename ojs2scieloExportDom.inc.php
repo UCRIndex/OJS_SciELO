@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/importexport/ojs2scielo/ojs2scieloExportDomM.inc.php
+ * @file plugins/importexport/ojs2scielo/Ojs2scieloExportDom.inc.php
  *
  * Copyright (c) 2013-2014 Simon Fraser University Library
  * Copyright (c) 2003-2014 John Willinsky
@@ -24,7 +24,7 @@ define('NATIVE_DTD_ID', '-//PKP//OJS Articles and Issues XML//EN');
  * Clase encargada de crear el XML mediante la clase XMLCustomWriter, recopilar la información necesaria y exportar el XML correspondiente a SciELO.
  */
 
-class Ojs2ScieloExportDomM {
+class Ojs2ScieloExportDom {
 
 	function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = null) {	
 		// Crear el documento con el respectivo DTD y URL definidos al inicio de la clase.
@@ -40,16 +40,16 @@ class Ojs2ScieloExportDomM {
 		XMLCustomWriter::appendChild($doc, $header);
 		
 		// Agrega el nodo "front" y sus respectivos hijos.
-		ojs2scieloExportDomM::addFrontNode($journal, $article, $doc, $header);
+		Ojs2ScieloExportDom::addFrontNode($journal, $article, $doc, $header);
 		
 		// Agrega el nodo "body" y sus respectivos hijos.
-		ojs2scieloExportDomM::addBodyNode($article, $doc, $header);
+		Ojs2ScieloExportDom::addBodyNode($article, $doc, $header);
 		
 		// Agrega el nodo "back" y sus respectivos hijos.
-		ojs2scieloExportDomM::addBackNode($article, $doc, $header);
+		Ojs2ScieloExportDom::addBackNode($article, $doc, $header);
 		
 		// Exporta el archivo final para que el usuario pueda proceder a descargarlo.
-		ojs2scieloExportDomM::exportXML($article, $doc, $outputFile);
+		Ojs2ScieloExportDom::exportXML($article, $doc, $outputFile);
 	}
 	
 	/*
