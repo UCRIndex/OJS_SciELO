@@ -11,26 +11,25 @@
  * @ingroup plugins_importexport_native,
  *
  * @brief import/export plugin
- * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
+ * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
  */
 
 class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 
-	/**
-	 * Called as a plugin is registered to the registry
-	 * @param $category String Name of category plugin was registered to
-	 * @return boolean True iff plugin initialized successfully; if false,
-	 * 	the plugin will not be registered.
-	 */
+	/* *
+	 * Called as a plugin is registered to the registry.
+	 * @param $category String Name of category plugin was registered to.
+	 * @return boolean True if plugin initialized successfully; if false, the plugin will not be registered.
+	 * */
 	function register($category, $path) {
 		$success = parent::register($category, $path);
 		$this->addLocaleData();
 		return $success;
 	}
 	
-	/**
-	 * Display the command-line usage information
-	 */
+	/* *
+	 * Display the command-line usage information.
+	 * */
 	function usage($scriptName) {
 		echo __('plugins.importexport.ojs2scielo.cliUsage', array(
 			'scriptName' => $scriptName,
@@ -38,55 +37,62 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 		)) . "\n";
 	}
 
-	/**
-	 * Obtiene el nombre del plugin.
-	 * Este nombre debe ser único dentro de su categoría
-	 * @return String nombre del plugin
-	 */
+	/* *
+	 * States the name of the plugin. This name must be unique in its category.
+	 * @return String name of the plugin.
+	 * */
 	function getName() {
 		return 'ojs2scieloImportExportPlugin';
 	}
 
-	/**
-	 * Obtiene el nombre que se despliega en la página de Importar/exportar datos
-	 * Dicho nombre se obtiene del archivo locale correspondiente, buscado con la clave entre paréntesis
-	 * @return String nombre del plugin
+	/* *
+	 * This method returns the name of the plugin that is shown at the import/export page. This name is found at the 
+	 * locale corresponding file.
+	 * @return String name of the plugin.
 	 * */
 	function getDisplayName() {
 		return __('plugins.importexport.ojs2scielo.displayName');
 	}
 
-	/**
-	 * Obtiene la descripción que se despliega en la página de Importar/exportar datos
-	 * Dicha descripción se obtiene del archivo locale correspondiente, buscado con la clave entre paréntesis
-	 * @return String nombre del plugin
+	/* *
+	 * This method returns the description of the plugin that is shown at the import/export page. This description is
+	 * found at the locale corresponding file.
+	 * @return String name of the plugin.
 	 * */
 	function getDescription() {
 		return __('plugins.importexport.ojs2scielo.description');
 	}
 	
+	/* *
+	 * This method parses a specific file with the XMLParser already implemented at OJS. This would be helpful when
+	 * the switch structure is completed.
+	 * */
 	function &getDocument($fileName) {
 		$parser = new XMLParser();
 		$returner =& $parser->parse($fileName);
 		return $returner;
 	}
 
+	/* *
+	 * Returns the name of the root node (this root refers to the main note at the XML document). This would be
+	 * helpful when the switch structure is completed.
+	 * */
 	function getRootNodeName(&$doc) {
 		return $doc->name;
 	}
 	
-	/*
-	 * Función encargada de mostrar el listado de opciones del plugin.
-	 * Desde acá se pueden exportar números completos y artículos mediante la clase Ojs2ScieloExportDom
-	 */
+	/**
+	 * This method contains the functionality of the plugin. For now, the switch structure comprises just the 'export
+	 * article' option. Later, it should be added the options for the management of issues ('exportIssues',
+	 * 'exportIssue', 'issues') as well as the option for import. At this moment, the issue options should behave
+	 * as the 'default' option.
+	 * */
 	function display(&$args) {
-
 		$this->import('Ojs2scieloExportDom');
 		$templateMgr =& TemplateManager::getManager();
 		parent::display($args);
 		$issueDao =& DAORegistry::getDAO('IssueDAO');
 		$journal =& Request::getJournal();
-		// Opciones para exportar.
 		switch (array_shift($args)) {
 			case 'exportArticle':
 				$articleIds = array(array_shift($args));
@@ -94,7 +100,8 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 				Ojs2ScieloExportDom::exportArticle($journal, $result['issue'], $result['section'], $result['publishedArticle']);
 				break;
 			case 'articles':
-				// Muestra la lista de los artículos de cada revista
+				// This option shows the list of articles of each journal (the selection of the user
+				// would be exported to XML.
 				$this->setBreadcrumbs(array(), true);
 				$publishedArticleDao =& DAORegistry::getDAO('PublishedArticleDAO');
 				$rangeInfo = Handler::getRangeInfo('articles');
@@ -107,6 +114,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 				$templateMgr->display($this->getTemplatePath() . 'articles.tpl');
 				break;	
 			default:
+				// The default option restores the page due to an invalid selection.
 				$this->setBreadcrumbs();
 				$templateMgr->display($this->getTemplatePath() . 'index.tpl');
 		}
