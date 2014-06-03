@@ -9,7 +9,7 @@
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Plugin version information.
-  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
+  * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
   -->
 <version>
 	<application>ojs2scielo</application>
