@@ -6,7 +6,7 @@
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * DTD for native XML import/export.
-  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
+  * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
   -->
 
 <!-- Top-level collection containers for batch importing -->
