@@ -466,33 +466,38 @@ class Ojs2ScieloExportDom {
 		}
 	}
 	
+	/*
+	 * This function obtains the affiliation an author and adds them to the tree of nodes.
+	 * @$article from where the affiliations are going to be extracted.
+	 * @$articleMetaNode father node.
+	 */
 	private function getAuthorsAffiliation(&$article, &$articleMetaNode) {
-		$j = 1;
+		$j = 1; // Integer that indicates the position of the affiliation of an author in the XML tree. In order to make sense, this variable and the one in the function "getArticleAuthors" must match.
 		foreach ($article->getAuthors() as $author) {
-			// Nodo: aff.
+			// Aff node.
 			$affGroupNode =& XMLCustomWriter::createElement($doc, 'aff');
-			$affid = "aff" . $j; // $affid + $j: enlazan el grupo de autor con su correspondiente afiliación. Es decir, el primer autor deberá tener como etiqueta 1 y el atributo del nodo $affGroupNode: 'aff1', el segudo etiqueta 2 y atributo 'aff2', etc.
+			$affid = "aff" . $j; // This concatenation bounds the author with its corresponding affiliation. The affiliation with label 1 must refer to the first author in the tree.
 			XMLCustomWriter::setAttribute($affGroupNode, 'id', $affid);
 			XMLCustomWriter::appendChild($articleMetaNode, $affGroupNode);
 
-			// Nodo: label.
+			// Label node.
 			$labelNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'label', $j, false);
 		
-			// Obtiene las afiliaciones de cada autor.
+			// Extracts the affiliations.
 			$affiliations = $author->getAffiliation(null);
 
-			$i = 0;
+			$i = 0; // Integer that indicates the number of affiliation.
 
-			// Itera sobre las afiliaciones de cada autor.
+			// Extracts the information each author.
 			if (is_array($affiliations)) foreach ($affiliations as $locale => $affiliation) {
 				$i++;
-				$orgDiv = "orgdiv" . $i; // "orgdiv + #"
+				$orgDiv = "orgdiv" . $i; // Concatenates the division with the number of affiliation.
 
-				// Nodo: orgdiv.
+				// Orgdiv node.
 				$orgDivNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'institution', $affiliation, false);
 				XMLCustomWriter::setAttribute($orgDivNode, 'content-type', $orgDiv);
 				
-				// Nodo: orgname.
+				// Orgname node.
 				$orgNameNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'institution', $affiliation, false);
 				XMLCustomWriter::setAttribute($orgNameNode, 'content-type', 'orgname');
 
@@ -500,29 +505,30 @@ class Ojs2ScieloExportDom {
 				unset($orgNameNode);
 			}
 		
-			// Nodo: zipcode.
+			// Zipcode node.
 			$zipCodeNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', 'addzipcode', false);
 			XMLCustomWriter::setAttribute($zipCodeNode, 'content-type', 'zipcode');
 		
-			// Nodo: city.
+			// City node.
 			$cityNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', 'addcity', false);
 			XMLCustomWriter::setAttribute($cityNode, 'content-type', 'city');
 		
-			// Nodo: state
+			// State node.
 			$stateNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', 'addstate', false);
 			XMLCustomWriter::setAttribute($stateNode, 'content-type', 'state');
 		
-			// Nodo: addr-line.
+			// Addr-line node.
 			$addrNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'addr-line', 'addaddr-line', false);
 		
-			// Nodo: country.
+			// Country node.
 			$countryNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'country', $author->getCountry(), false);
 		
-			// Nodo: email.
+			// Email node.
 			$institutionalEmailNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'email', $author->getEmail(), false);
 
-			$j++;
-
+			$j++; // Increments the number of authors.
+			
+			// Releases the nodes (variables) for the next iteration.
 			unset($affGroupNode);
 			unset($labelNode);
 			unset($zipCodeNode);
@@ -534,56 +540,63 @@ class Ojs2ScieloExportDom {
 		}
 	}
 	
+	/*
+	 * Since the SciELO's schema requieres a season (name of the month) for the publication date, there must be a casting. This function
+	 * obtains the corresponding numbrer of the month and returns the initials of the month.
+	 * @$article from where the season is going to be extracted.
+	 * @return initials of the month or an empty variable if there is an error.
+	 */
 	private function getSeason(&$article) {
-		$m = date('m', strtotime($article->getDatePublished())); // Obtiene el mes de la publicación.
-
-		// Se transforma el número correspondiente al año a sus iniciales para obtener $season.
+		$m = date('m', strtotime($article->getDatePublished())); // Gets the number of the month by using the label 'm'.
 		switch ($m) {
-    		case 1:
-        		$season = "Jan";
-        	break;
-    		case 2:
-        		$season = "Feb";
-        	break;
-    		case 3:
-        		$season = "Mar";
-        	break;
-        	case 4:
-        		$season = "Apr";
-        	break;
-        	case 5:
-        		$season = "May";
-        	break;
-        	case 6:
-        		$season = "Jun";
-        	break;
-        	case 7:
-        		$season = "Jul";
-        	break;
-        	case 8:
-        		$season = "Aug";
-        	break;
-        	case 9:
-        		$season = "Sep";
-        	break;
-        	case 10:
-        		$season = "Oct";
-        	break;
-        	case 11:
-        		$season = "Nov";
-        	break;
-        	case 12:
-        		$season = "Dic";
-        	break;
-        	default:
-        		$season = "";
-        	break;
+    			case 1:
+        			$season = "Jan";
+        			break;
+    			case 2:
+        			$season = "Feb";
+        			break;
+    			case 3:
+        			$season = "Mar";
+        			break;
+        		case 4:
+        			$season = "Apr";
+        			break;
+        		case 5:
+        			$season = "May";
+        			break;
+        		case 6:
+        			$season = "Jun";
+        			break;
+        		case 7:
+        			$season = "Jul";
+        			break;
+        		case 8:
+        			$season = "Aug";
+        			break;
+        		case 9:
+        			$season = "Sep";
+        			break;
+        		case 10:
+        			$season = "Oct";
+        			break;
+        		case 11:
+        			$season = "Nov";
+        			break;
+        		case 12:
+        			$season = "Dic";
+        			break;
+        		default:
+        			$season = "";
+        			break;
 		}
 		return $season;
 	}
 	
 	/*
 	 * After the tree of nodes is completed, this method exports it into the XML file.
+	 * @$article refers to the selected article (object).
+	 * @$doc refers to the XML document.
+	 * @$outputFile refers to the output type.
 	 */
 	private function exportXML(&$article, &$doc, $outputFile = null) {
 		if (!empty($outputFile)) {
