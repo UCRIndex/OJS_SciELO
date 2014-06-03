@@ -33,6 +33,11 @@ class Ojs2ScieloExportDom {
 	 * exports the XML.
 	 * This method receives five parameters that contain the corresponding journal, issue, section, and article chosen
 	 * by the user.
+	 * $journal refers to the journal that contains the selected article (object).
+	 * $issue refers to the journal issue (object).
+	 * $section refers to the section of the journal (object).
+	 * $article refers to the selected article (object),
+	 * $outputFile refers to the output type.
 	 */
 	function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = null) {	
 		// For the creation of the document the function needs the DTD and its URL (root).
@@ -63,10 +68,10 @@ class Ojs2ScieloExportDom {
 	/*
 	 * Prepares the structure for the "front" node. Each node is created and the attributes are attached to its
 	 * corresponding node.
-	 * @$journal contains the journal data of the article.
-	 * @$article contains the article chosen by the user.
-	 * @$doc contains the XML document created by the XMLCustomWriter class.
-	 * @$header contains the first node of the document.
+	 * @$journal contains the journal data of the article (object).
+	 * @$article contains the article chosen by the user (object).
+	 * @$doc contains the XML document created by the XMLCustomWriter class (XML document).
+	 * @$header contains the first node of the document (XML node).
 	 */
 	private function addFrontNode(&$journal, &$article, &$doc, &$header) {
 		// Front node.
@@ -289,115 +294,103 @@ class Ojs2ScieloExportDom {
 	
 	/*
 	 * This method adds the body node to the XML document. For now, it just contains the basic node.
-	 * Here the nodes are tied to the content of the document, so there must be a strategy to extract the body from the document.
+	 * Here, the nodes are tied to the content of the document, so there must be a strategy to extract the body from the document and
+	 * transform these sections into nodes (paragraphs, titles, tables, etc.).
 	 */
 	private function addBodyNode(&$article, &$doc, &$header) {
-		// Nodo: body
+		// Body node.
 		$bodyNode =& XMLCustomWriter::createElement($doc, 'body');
 		XMLCustomWriter::appendChild($header, $bodyNode);
-		
-		// Agregar acá los nodos correspondientes al cuerpo del artículo.
 	}
 	
 	/*
-	 * Agrega el nodo "back" y sus hijos al documento (algunos nodos deberán ser replicados, por ejemplo el grupo de ref-list; esto dependerá de cada archivo y deberá ser modificado en su momento).
+	 * addBackNode creates the structure for the "back" node. For now, it just has the basic requirements, but later some of these
+	 * groups of nodes must be replicated; for instance: "ref-list". This is directly related to the content of the documents.
 	 */
 	private function addBackNode(&$article, &$doc, &$header) {
-		// Nodo: back
+		// Back node.
 		$backNode =& XMLCustomWriter::createElement($doc, 'back');
 		XMLCustomWriter::appendChild($header, $backNode);
 		
-		// Nodo: ack
+		// Ack node.
 		$ackNode =& XMLCustomWriter::createElement($doc, 'ack');
 		XMLCustomWriter::appendChild($backNode, $ackNode);
 		
-		// Nodo: sec
+		// Sec node.
 		$secAckNode =& XMLCustomWriter::createElement($doc, 'sec');
 		XMLCustomWriter::appendChild($ackNode, $secAckNode);
 		
-		// Nodo: title
+		// Title node.
 		$titleSecNode =& XMLCustomWriter::createChildWithText($doc, $secAckNode, 'title', 'ACKNOWLEDGMENTS', false);
 		
-		// Nodo: p (párrafo de agradecimientos)
+		// P (acknowledgments paragraph) node.
 		$pNode =& XMLCustomWriter::createChildWithText($doc, $secAckNode, 'p', 'addacknowledgments', false);
 		
-		// Nodo: ref-list (repetir para cada referencia)
+		// Ref-list node (repeat this group for each reference).
 		$refListNode =& XMLCustomWriter::createElement($doc, 'ref-list');
 		XMLCustomWriter::appendChild($backNode, $refListNode);
 		
-		// Nodo: title
+		// Title node.
 		$titleSecNode =& XMLCustomWriter::createChildWithText($doc, $refListNode, 'title', 'REFERENCES', false);
 		
-		// Nodo: ref
+		// Ref node.
 		$refNode =& XMLCustomWriter::createElement($doc, 'ref');
 		XMLCustomWriter::setAttribute($refNode, 'id', 'addid');
 		XMLCustomWriter::appendChild($refListNode, $refNode);
 		
-		// Nodo: label
+		// Label node.
 		$labelNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'label', 'addlabel', false);
 		
-		// Nodo: element-citation
+		// Element-citation node.
 		$elementCitationNode =& XMLCustomWriter::createElement($doc, 'element-citation');
 		XMLCustomWriter::setAttribute($elementCitationNode, 'publication-type', 'journal');
 		XMLCustomWriter::appendChild($refNode, $elementCitationNode);
 		
-		// Nodo: person-group
+		// Person-group node.
 		$personGroupNode =& XMLCustomWriter::createElement($doc, 'person-group');
 		XMLCustomWriter::setAttribute($personGroupNode, 'person-group-type', 'author');
 		XMLCustomWriter::appendChild($elementCitationNode, $personGroupNode);
 		
-		// Nodo: name (repetir para todos los autores)
+		// Name node (repeat this group for each author).
 		$nameRefNode =& XMLCustomWriter::createElement($doc, 'name');
 		XMLCustomWriter::appendChild($personGroupNode, $nameRefNode);
 		
-		// Nodo: surname
+		// Surname node.
 		$surnameRefNode =& XMLCustomWriter::createChildWithText($doc, $nameRefNode, 'surname', 'addsurname', false);
 		
-		// Nodo: given-names
+		// Given-names node.
 		$givenNamesRefNode =& XMLCustomWriter::createChildWithText($doc, $nameRefNode, 'given-names', 'addgiven-names', false);
 		
-		// Nodo: article-title
+		// Article-title node.
 		$articleTitleRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'article-title', 'addarticle-title', false);
 		XMLCustomWriter::setAttribute($articleTitleRefNode, 'xml:lang', 'addlang');
 		
-		// Nodo: source
+		// Source node.
 		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'source', 'addsource', false);
 		XMLCustomWriter::setAttribute($sourceRefNode, 'xml:lang', 'addlang');
 		
-		// Nodo: year
+		// Year node.
 		$yearRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'year', 'addyear', false);
 		
-		// Nodo: volume
+		// Volume node.
 		$volumeRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'volume', 'addvolume', false);
 		
-		// Nodo: fpage
+		// Fpage node.
 		$fpageRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'fpage', 'addfpage', false);
 		
-		// Nodo: lpage
+		// Lpage node.
 		$lpageRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'lpage', 'addlpage', false);
 		
-		// Nodo: mixed-citation
+		// Mixed-citation node.
 		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'mixed-citation', 'addmixed-citation', false);
 	}
 	
 	/*
-	 * Se encarga de exportar el archivo luego de que sus nodos fueron creados.
+	 * Searches for the ISSN of a journal. The function excecutes three queries: print ISSN, ISSN or online ISSN; otherwise, it returns
+	 * an empty variable.
+	 * @journal refers to the selected journal.
+	 * @return value of the ISSN or an empty value if it was not found.
 	 */
-	private function exportXML(&$article, &$doc, $outputFile = null) {
-		// Generar el archivo XML.
-		if (!empty($outputFile)) {
-			if (($h = fopen($outputFile, 'w'))===false) return false;
-			fwrite($h, XMLCustomWriter::getXML($doc));
-			fclose($h);
-		} else {
-			header("Content-Type: application/xml");
-			header("Cache-Control: private");
-			// Nombre y extensión del archivo.
-			header("Content-Disposition: attachment; filename=\"article-" . $article->getId() . ".xml\"");
-			XMLCustomWriter::printXML($doc);
-		}
-	}
-	
 	private function getISSN(&$journal) {
 		if ($journal->getSetting('printIssn') != '') $issn = $journal->getSetting('printIssn');
 		elseif ($journal->getSetting('issn') != '') $issn = $journal->getSetting('issn');
@@ -406,25 +399,46 @@ class Ojs2ScieloExportDom {
 		return $issn;
 	}
 	
+	/*
+	 * This function obtains the title or titles of an article and adds them to the tree of nodes.
+	 * @$article from where the titles are going to be extracted.
+	 * @$titleGroupNode father node.
+	 */
 	private function getArticleTitle(&$article, &$titleGroupNode) {
-		// Nodo(s): article-title.
+		// Checks if the article contains more than one title.
 		if (is_array($article->getTitle(null))) foreach ($article->getTitle(null) as $locale => $title) {
 			if($article->getLocale() == $locale) {
 				$titleNode =& XMLCustomWriter::createChildWithText($doc, $titleGroupNode, 'article-title', $title, false);
-				$lang = substr($locale, 0, 2); // Manejo de string para obtener el idioma (ejemplo: $locale = es_ES; resultado: es).
-				XMLCustomWriter::setAttribute($titleNode, 'xml:lang', $lang);
-				unset($titleNode);
-				unset($lang);
+				$lang = substr($locale, 0, 2); // Locale contains the localization of the document (es_ES, en_EN, etc.), so to obtain the idiom we just take the first two letters from the string (es, en, etc.).
+				XMLCustomWriter::setAttribute($titleNode, 'xml:lang', $lang); // Adds title & language properly.
+				unset($titleNode); // Desocupies the variable for the next title.
+				unset($lang); // Desocupies the variable for the next language.
 			} else {
 				$transTitleGroupNode =& XMLCustomWriter::createElement($doc, 'trans-title-group');
-				$lang = substr($locale, 0, 2); // Manejo de string para obtener el idioma (ejemplo: $locale = es_ES; resultado: es).
-				XMLCustomWriter::setAttribute($transTitleGroupNode, 'xml:lang', $lang);
+				$lang = substr($locale, 0, 2); // Locale contains the localization of the document (es_ES, en_EN, etc.), so to obtain the idiom we just take the first two letters from the string (es, en, etc.).
+				XMLCustomWriter::setAttribute($transTitleGroupNode, 'xml:lang', $lang); // Adds title & language properly.
 				XMLCustomWriter::appendChild($titleGroupNode, $transTitleGroupNode);
 				$transTitleNode =& XMLCustomWriter::createChildWithText($doc, $transTitleGroupNode, 'trans-title', $title, false);
-				unset($transTitleGroupNode);
-				unset($transTitleNode);
-				unset($lang);
+				unset($transTitleGroupNode); // Desocupies the variable for the title group.
+				unset($transTitleNode); // Desocupies the variable for the next title.
+				unset($lang); // Desocupies the variable for the next language.
 			}
+		}
+	}
+	
+	/*
+	 * After the tree of nodes is completed, this method exports it into the XML file.
+	 */
+	private function exportXML(&$article, &$doc, $outputFile = null) {
+		if (!empty($outputFile)) {
+			if (($h = fopen($outputFile, 'w'))===false) return false;
+			fwrite($h, XMLCustomWriter::getXML($doc));
+			fclose($h);
+		} else {
+			header("Content-Type: application/xml");
+			header("Cache-Control: private");
+			header("Content-Disposition: attachment; filename=\"article-" . $article->getId() . ".xml\""); // Name & extension of the file.
+			XMLCustomWriter::printXML($doc);
 		}
 	}
 	
