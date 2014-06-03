@@ -292,6 +292,41 @@ class Ojs2ScieloExportDom {
 		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
 	}
 	
+	private function addJournalMeta(&$frontNode) {
+		// Journal-meta node.
+		$journalMetaNode =& XMLCustomWriter::createElement($doc, 'journal-meta');
+		XMLCustomWriter::appendChild($frontNode, $journalMetaNode);
+
+		// Journal-id node.
+		$journalIDNode =& XMLCustomWriter::createChildWithText($doc, $journalMetaNode, 'journal-id', $journal->getJournalId(), false);
+		XMLCustomWriter::setAttribute($journalIDNode, 'journal-id-type', 'nlm-ta');
+
+		// Journal-title-group node.
+		$journalTitleGroupNode =& XMLCustomWriter::createElement($doc, 'journal-title-group');
+		XMLCustomWriter::appendChild($journalMetaNode, $journalTitleGroupNode);
+
+		// Journal-title node.
+		$journalTitleNode =& XMLCustomWriter::createChildWithText($doc, $journalTitleGroupNode, 'journal-title', $journal->getLocalizedTitle(), false);
+		
+		// At this point, there is an optional node for the translation of the title. It might be added to the document.
+		
+		// Abbrev-journal-title node.
+		$abbrevJournalTitleNode =& XMLCustomWriter::createChildWithText($doc, $journalTitleGroupNode, 'abbrev-journal-title', $journal->getLocalizedInitials(), false);
+		XMLCustomWriter::setAttribute($abbrevJournalTitleNode, 'abbrev-type', 'publisher');
+		
+		// ISSN node.
+		$issn = Ojs2ScieloExportDom::getISSN($journal);
+		$issnNode =& XMLCustomWriter::createChildWithText($doc, $journalMetaNode, 'issn', $issn, false);
+		XMLCustomWriter::setAttribute($issnNode, 'pub-type', 'ppub');
+		
+		// Publisher node.
+		$publisherNode =& XMLCustomWriter::createElement($doc, 'publisher');
+		XMLCustomWriter::appendChild($journalMetaNode, $publisherNode);
+
+		// Publisher-name node.
+		$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'addpublisher-name', false);
+	}
+	
 	/*
 	 * This method adds the body node to the XML document. For now, it just contains the basic node.
 	 * Here, the nodes are tied to the content of the document, so there must be a strategy to extract the body from the document and
