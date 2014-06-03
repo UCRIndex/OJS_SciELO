@@ -14,7 +14,6 @@
  * @ingroup plugins_importexport_ojs2scielo
  * @brief Wrapper for native XML import/export plugin.
  * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
- * 
  */
 
 //Se busca en el directorio del plugin al archivo ojs2scieloImportExportPlugin.inc.php
