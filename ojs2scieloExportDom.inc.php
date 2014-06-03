@@ -195,13 +195,13 @@ class Ojs2ScieloExportDom {
 		XMLCustomWriter::setAttribute($dateTypeRecivedNode, 'date-type', 'received');
 		XMLCustomWriter::appendChild($historyNode, $dateTypeRecivedNode);
 		
-		// Day received node.
+		// Day-received node.
 		$dayRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'day', 'addday', false);
 		
-		// Month received node.
+		// Month-received node.
 		$monthRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'month', 'addmonth', false);
 		
-		// Year received node.
+		// Year-received node.
 		$yearRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'year', 'addyear', false);
 		
 		// Date-type accepted node.
@@ -209,13 +209,13 @@ class Ojs2ScieloExportDom {
 		XMLCustomWriter::setAttribute($dateTypeAcceptedNode, 'date-type', 'accepted');
 		XMLCustomWriter::appendChild($historyNode, $dateTypeAcceptedNode);
 		
-		// Day accepted node.
+		// Day-accepted node.
 		$dayAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'day', 'addday', false);
 		
-		// Month accepted node.
+		// Month-accepted node.
 		$monthAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'month', 'addmonth', false);
 		
-		// Year accepted node.
+		// Year-accepted node.
 		$yearAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'year', 'addyear', false);
 		
 		// Permissions node.
@@ -271,24 +271,25 @@ class Ojs2ScieloExportDom {
 		XMLCustomWriter::setAttribute($figCountNode, 'count', 'addcount');
 		XMLCustomWriter::appendChild($countsNode, $figCountNode);
 		
-		// Nodo: table-count (number of tables in the article).
+		// Table-count node (number of tables in the article).
 		$tableCountNode =& XMLCustomWriter::createElement($doc, 'table-count');
 		XMLCustomWriter::setAttribute($tableCountNode, 'count', 'addcount');
 		XMLCustomWriter::appendChild($countsNode, $tableCountNode);
 		
-		// Nodo: ref-count (number of references in the article).
+		// Ref-count node (number of references in the article).
 		$refCountNode =& XMLCustomWriter::createElement($doc, 'ref-count');
 		XMLCustomWriter::setAttribute($refCountNode, 'count', 'addcount');
 		XMLCustomWriter::appendChild($countsNode, $refCountNode);
 		
-		// Nodo: page-count (numbrer of pages in the article).
+		// Page-count node (numbrer of pages in the article).
 		$pageCountNode =& XMLCustomWriter::createElement($doc, 'page-count');
 		XMLCustomWriter::setAttribute($pageCountNode, 'count', 'addcount');
 		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
 	}
 	
 	/*
-	 * Agrega el nodo "body" al documento (los nodos dentro de "body" dependerán de cada documento por lo tanto deberá modificarse esta función cuando se obtengan las secciones del archivo).
+	 * This method adds the body node to the XML document. For now, it just contains the basic node.
+	 * Here the nodes are tied to the content of the document, so there must be a strategy to extract the body from the document.
 	 */
 	private function addBodyNode(&$article, &$doc, &$header) {
 		// Nodo: body
