@@ -6,7 +6,8 @@
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * List of issues to potentially export
- * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
+ * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
+ *
  *}
 {strip}
 {assign var="pageTitle" value="plugins.importexport.ojs2scielo.selectIssue"}
