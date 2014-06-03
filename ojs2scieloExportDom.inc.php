@@ -11,7 +11,7 @@
  * @ingroup plugins_importexport_native
  *
  * @brief import/export plugin DOM functions for export
- * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
+ * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
  */
 
 
@@ -21,16 +21,23 @@ define('NATIVE_DTD_URL', 'http://pkp.sfu.ca/ojs/dtds/2.3/native.dtd');
 define('NATIVE_DTD_ID', '-//PKP//OJS Articles and Issues XML//EN');
 
 /*
- * Clase encargada de crear el XML mediante la clase XMLCustomWriter, recopilar la información necesaria y exportar el XML correspondiente a SciELO.
+ * This class exports an article to a XML using the XMLCustomWriter class already implemented (for more information about
+ * the creation of nodes and attributes: http://pkp.sfu.ca/ojs/doxygen/stable/html/XMLCustomWriter_8inc_8php_source.html).
+ * Most methods are used for modularization and gather information.
  */
-
 class Ojs2ScieloExportDom {
 
+	/*
+	 * exportArticle creates the XML document, adds the front node to the document (with its children), adds the body
+	 * node to the document (with its children), adds the back node to the document (with its children) and finally
+	 * exports the XML.
+	 * This method receives five static variables from the switch structure. From them, it gets the data of the article.
+	 */
 	function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = null) {	
-		// Crear el documento con el respectivo DTD y URL definidos al inicio de la clase.
+		// For the creation of the document the function needs the DTD and its URL (root).
 		$doc =& XMLCustomWriter::createDocument('article', NATIVE_DTD_ID, NATIVE_DTD_URL);
 		
-		// Nodo: article y sus respectivos atributos.
+		// Header node and its attributes (first node of the document).
 		$header =& XMLCustomWriter::createElement($doc, 'article');
 		XMLCustomWriter::setAttribute($header, 'xmlns:xlink', 'addurl');
 		XMLCustomWriter::setAttribute($header, 'xmlns:mml', 'addmml');
@@ -39,16 +46,16 @@ class Ojs2ScieloExportDom {
 		XMLCustomWriter::setAttribute($header, 'xml:lang', $article->getLanguage());
 		XMLCustomWriter::appendChild($doc, $header);
 		
-		// Agrega el nodo "front" y sus respectivos hijos.
+		// Adds the front node to the document (with its children).
 		Ojs2ScieloExportDom::addFrontNode($journal, $article, $doc, $header);
 		
-		// Agrega el nodo "body" y sus respectivos hijos.
+		// Adds the body node to the document (with its children).
 		Ojs2ScieloExportDom::addBodyNode($article, $doc, $header);
 		
-		// Agrega el nodo "back" y sus respectivos hijos.
+		// Adds the back node to the document (with its children).
 		Ojs2ScieloExportDom::addBackNode($article, $doc, $header);
 		
-		// Exporta el archivo final para que el usuario pueda proceder a descargarlo.
+		// Exports the final file ready for download.
 		Ojs2ScieloExportDom::exportXML($article, $doc, $outputFile);
 	}
 	
