@@ -583,7 +583,7 @@ class Ojs2ScieloExportDom {
         			$season = "Nov";
         			break;
         		case 12:
-        			$season = "Dic";
+        			$season = "Dec";
         			break;
         		default:
         			$season = "";
