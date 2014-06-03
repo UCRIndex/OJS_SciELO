@@ -427,42 +427,30 @@ class Ojs2ScieloExportDom {
 	}
 	
 	/*
-	 * After the tree of nodes is completed, this method exports it into the XML file.
+	 * This function obtains the author or authors of an article and adds them to the tree of nodes.
+	 * @$article from where the authors are going to be extracted.
+	 * @$contribGroupNode father node.
 	 */
-	private function exportXML(&$article, &$doc, $outputFile = null) {
-		if (!empty($outputFile)) {
-			if (($h = fopen($outputFile, 'w'))===false) return false;
-			fwrite($h, XMLCustomWriter::getXML($doc));
-			fclose($h);
-		} else {
-			header("Content-Type: application/xml");
-			header("Cache-Control: private");
-			header("Content-Disposition: attachment; filename=\"article-" . $article->getId() . ".xml\""); // Name & extension of the file.
-			XMLCustomWriter::printXML($doc);
-		}
-	}
-	
 	private function getArticleAuthors(&$article, &$contribGroupNode) {
-		// Autores.
-		$i = 1;
+		$i = 1; // Integer that indicates the position of the author in the XML tree.
 		foreach ($article->getAuthors() as $author) {
-			// Nodo: contrib.
+			// Contrib node.
 			$contribNode =& XMLCustomWriter::createElement($doc, 'contrib');
 			XMLCustomWriter::setAttribute($contribNode, 'contrib-type', 'author');
 			XMLCustomWriter::appendChild($contribGroupNode, $contribNode);
 			
-			// Nodo: name.
+			// Name node.
 			$nameNode =& XMLCustomWriter::createElement($doc, 'name');
 			XMLCustomWriter::appendChild($contribNode, $nameNode);
 			
-			// Nodo: surname.
+			// Surname node.
 			$surnameNode =& XMLCustomWriter::createChildWithText($doc, $nameNode, 'surname', $author->getFirstName(), false);
 			
-			// Nodo: given-names.
+			// Given-names node.
 			$givenNamesNode =& XMLCustomWriter::createChildWithText($doc, $nameNode, 'given-names', $author->getLastName(), false);
 			
-			// Nodo: xref.
-			$rid = "aff" . $i; // "aff + #"
+			// Xref node.
+			$rid = "aff" . $i; // Concatenation of "aff" plus the position of the author. This label corresponds to the schema developed by SciELO.
 			$affLinkNode =& XMLCustomWriter::createChildWithText($doc, $contribNode, 'xref', $i, false);
 			XMLCustomWriter::setAttribute($affLinkNode, 'ref-type', 'aff');
 			XMLCustomWriter::setAttribute($affLinkNode, 'rid', $rid);
@@ -592,6 +580,22 @@ class Ojs2ScieloExportDom {
         	break;
 		}
 		return $season;
+	}
+	
+	/*
+	 * After the tree of nodes is completed, this method exports it into the XML file.
+	 */
+	private function exportXML(&$article, &$doc, $outputFile = null) {
+		if (!empty($outputFile)) {
+			if (($h = fopen($outputFile, 'w'))===false) return false;
+			fwrite($h, XMLCustomWriter::getXML($doc));
+			fclose($h);
+		} else {
+			header("Content-Type: application/xml");
+			header("Cache-Control: private");
+			header("Content-Disposition: attachment; filename=\"article-" . $article->getId() . ".xml\""); // Name & extension of the file.
+			XMLCustomWriter::printXML($doc);
+		}
 	}
 }
 
