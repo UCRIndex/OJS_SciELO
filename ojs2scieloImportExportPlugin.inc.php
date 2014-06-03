@@ -57,7 +57,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 	/* *
 	 * This method returns the description of the plugin that is shown at the import/export page. This description is
 	 * found at the locale corresponding file.
-	 * @return String name of the plugin.
+	 * @return String description of the plugin.
 	 * */
 	function getDescription() {
 		return __('plugins.importexport.ojs2scielo.description');
@@ -66,6 +66,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 	/* *
 	 * This method parses a specific file with the XMLParser already implemented at OJS. This would be helpful when
 	 * the switch structure is completed.
+	 * @return XML Parsed document.
 	 * */
 	function &getDocument($fileName) {
 		$parser = new XMLParser();
@@ -76,6 +77,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 	/* *
 	 * Returns the name of the root node (this root refers to the main note at the XML document). This would be
 	 * helpful when the switch structure is completed.
+	 * @return String name of the main node.
 	 * */
 	function getRootNodeName(&$doc) {
 		return $doc->name;
