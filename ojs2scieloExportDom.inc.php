@@ -114,7 +114,7 @@ class Ojs2ScieloExportDom {
 		$publisherIDNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'article-id', $article->getPublishedArticleId(), false);
 		XMLCustomWriter::setAttribute($publisherIDNode, 'pub-id-type', 'publisher-id');
 		
-		// Article-id (doi) node..
+		// Article-id (doi) node.
 		$publisherIDNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'article-id', 'adddoi', false);
 		XMLCustomWriter::setAttribute($publisherIDNode, 'pub-id-type', 'doi');
 		
@@ -171,7 +171,7 @@ class Ojs2ScieloExportDom {
 		$seasonNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'season', $season, false);
 		
 		// Year node.
-		$year = date('Y', strtotime($article->getDatePublished())); // Obtiene el año de la publicación.
+		$year = date('Y', strtotime($article->getDatePublished())); // Gets the year of the publication by using the label 'Y'.
 		$yearNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'year', $year, false);
 		
 		// Volume node.
@@ -235,50 +235,53 @@ class Ojs2ScieloExportDom {
 		$abstractNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'abstract', 'addabstract', false);
 		XMLCustomWriter::setAttribute($abstractNode, 'xml:lang', 'addlang');
 		
-		// Dentro del nodo abstract se deberán crear los nodos correspondientes para el título y los párrafos. No los agrego aún porque dependen del tipo de abstact.
-		// Además puede agregarse un nodo con la traducción. Esto debe agregarse luego porque depende de cada archivo y la información que se brinde con el documento.
+		// Inside the abstract node, there are the "title" and "paragraph" nodes. These nodes do not appear in
+		// this schema because they depend on the content of the abstact. However, they must be attached in
+		// the next release. Likewise, there is a "translation" node that must be taken into account.
 		
-		// Nodo: kwd-group.
+		// Kwd-group node.
 		$kwdGroupNode =& XMLCustomWriter::createElement($doc, 'kwd-group');
 		XMLCustomWriter::setAttribute($kwdGroupNode, 'xml:lang', 'addlanguage');
 		XMLCustomWriter::appendChild($articleMetaNode, $kwdGroupNode);
 		
-		// Para cada palabra clave debe agregarse un nodo. Además pueden incluírse traducciones en cuyo caso se debe crear otro nodo "kwd-group" con su respectivo atrributo y un nodo para cada palabra.
+		// For each key word, the document must create a new node. There is also an optional "translation key word" group of
+		// nodes. This group is similar to the "kwd-group", with the exception that it contains the translation language
+		// as an attribute of the node.
 		
-		// Nodo: funding-group.
+		// Funding-group node.
 		$fundingGroupNode =& XMLCustomWriter::createElement($doc, 'funding-group');
 		XMLCustomWriter::appendChild($articleMetaNode, $fundingGroupNode);
 		
-		// Nodo: award-group.
+		// Award-group node.
 		$awardGroupNode =& XMLCustomWriter::createElement($doc, 'award-group');
 		XMLCustomWriter::appendChild($fundingGroupNode, $awardGroupNode);
 		
-		// Nodo: funding-source.
+		// Funding-source node.
 		$fundingSourceNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'funding-source', 'addfunding-source', false);
 		
-		// Nodo: award-id.
+		// Award-id node.
 		$awardIDNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'award-id', 'addaward-id', false);
 		
-		// Nodo: counts.
+		// Counts node.
 		$countsNode =& XMLCustomWriter::createElement($doc, 'counts');
 		XMLCustomWriter::appendChild($articleMetaNode, $countsNode);
 		
-		// Nodo: fig-count.
+		// Fig-count node (number of figures in the article).
 		$figCountNode =& XMLCustomWriter::createElement($doc, 'fig-count');
 		XMLCustomWriter::setAttribute($figCountNode, 'count', 'addcount');
 		XMLCustomWriter::appendChild($countsNode, $figCountNode);
 		
-		// Nodo: table-count.
+		// Nodo: table-count (number of tables in the article).
 		$tableCountNode =& XMLCustomWriter::createElement($doc, 'table-count');
 		XMLCustomWriter::setAttribute($tableCountNode, 'count', 'addcount');
 		XMLCustomWriter::appendChild($countsNode, $tableCountNode);
 		
-		// Nodo: ref-count.
+		// Nodo: ref-count (number of references in the article).
 		$refCountNode =& XMLCustomWriter::createElement($doc, 'ref-count');
 		XMLCustomWriter::setAttribute($refCountNode, 'count', 'addcount');
 		XMLCustomWriter::appendChild($countsNode, $refCountNode);
 		
-		// Nodo: page-count.
+		// Nodo: page-count (numbrer of pages in the article).
 		$pageCountNode =& XMLCustomWriter::createElement($doc, 'page-count');
 		XMLCustomWriter::setAttribute($pageCountNode, 'count', 'addcount');
 		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
