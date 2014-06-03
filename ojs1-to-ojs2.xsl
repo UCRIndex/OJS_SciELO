@@ -12,7 +12,7 @@
   * attention; please feel free to contribute additions and updates by
   * contacting the OJS team at pkp.contact@gmail.com.
   *
-  * (Tomado del plugin "native". Se realizaron modificaciones para exportar a SciELO)
+  * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
   -->
 
 
