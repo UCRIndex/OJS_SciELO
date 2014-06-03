@@ -7,7 +7,6 @@
  *
  * List of operations this plugin can perform
  * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
- *
  *}
 {strip}
 {assign var="pageTitle" value="plugins.importexport.ojs2scielo.displayName"}
