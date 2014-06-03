@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/importexport/ojs2scielo/ojs2scieloImportExportPlugin.inc.php
+ * @file plugins/importexport/ojs2scielo/Ojs2scieloImportExportPlugin.inc.php
  *
  * Copyright (c) 2013-2014 Simon Fraser University Library
  * Copyright (c) 2003-2014 John Willinsky
