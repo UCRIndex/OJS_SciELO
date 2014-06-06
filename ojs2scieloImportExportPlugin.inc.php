@@ -90,7 +90,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 	 * as the 'default' option.
 	 */
 	function display(&$args) {
-		$this->import('Ojs2scieloExportDom');
+		$this->import('ojs2scieloExportDom');
 		$templateMgr =& TemplateManager::getManager();
 		parent::display($args);
 		$issueDao =& DAORegistry::getDAO('IssueDAO');
@@ -102,8 +102,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 				Ojs2ScieloExportDom::exportArticle($journal, $result['issue'], $result['section'], $result['publishedArticle']);
 				break;
 			case 'articles':
-				// This option shows the list of articles of each journal (the selection of the user
-				// would be exported to XML.
+				// This option shows the list of articles of each journal.
 				$this->setBreadcrumbs(array(), true);
 				$publishedArticleDao =& DAORegistry::getDAO('PublishedArticleDAO');
 				$rangeInfo = Handler::getRangeInfo('articles');

@@ -16,10 +16,8 @@
  * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
  */
 
-//Se busca en el directorio del plugin al archivo ojs2scieloImportExportPlugin.inc.php
 require_once('ojs2scieloImportExportPlugin.inc.php');
 
-//La funcionalidad del plugin inicia con la invocaci�n al constructor de la clase Ojs2ScieloImportExportPlugin
 return new Ojs2ScieloImportExportPlugin();
 
 

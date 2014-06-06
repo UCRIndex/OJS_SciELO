@@ -24,8 +24,7 @@ define('NATIVE_DTD_ID', '-//PKP//OJS Articles and Issues XML//EN');
  * the creation of nodes and attributes: http://pkp.sfu.ca/ojs/doxygen/stable/html/XMLCustomWriter_8inc_8php_source.html).
  * Most methods are used for modularization (construction of each main node) and gather information.
  */
-class Ojs2ScieloExportDom {
-
+class Ojs2ScieloExportDom extends ImportExportPlugin {
 	/*
 	 * exportArticle creates the XML document, adds the front node to the document (with its children), adds the body
 	 * node to the document (with its children), adds the back node to the document (with its children) and finally
@@ -38,7 +37,7 @@ class Ojs2ScieloExportDom {
 	 * $article refers to the selected article (object),
 	 * $outputFile refers to the output type.
 	 */
-	function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = null) {	
+function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = null) {	
 		// For the creation of the document the function needs the DTD and its URL (root).
 		$doc =& XMLCustomWriter::createDocument('article', NATIVE_DTD_ID, NATIVE_DTD_URL);
 		
@@ -63,7 +62,7 @@ class Ojs2ScieloExportDom {
 		// Exports the final file ready for download.
 		Ojs2ScieloExportDom::exportXML($article, $doc, $outputFile);
 	}
-	
+
 	/*
 	 * Prepares the structure for the "front" node. Each node is created and the attributes are attached to its
 	 * corresponding node.
@@ -179,8 +178,9 @@ class Ojs2ScieloExportDom {
 		// Counts group.
 		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode);
 	}
-	
-	/*
+
+
+/*
 	 * This function gets and adds the journal nodes to the tree. It is used inside "addFrontNode".
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$frontNode: XML front node (father node).
@@ -673,7 +673,7 @@ class Ojs2ScieloExportDom {
 			header("Content-Disposition: attachment; filename=\"article-" . $article->getId() . ".xml\""); // Name & extension of the file.
 			XMLCustomWriter::printXML($doc);
 		}
-	}
+	}	
 }
 
 ?>
