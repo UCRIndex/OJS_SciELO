@@ -108,17 +108,17 @@ class Ojs2ScieloExportDom {
 		$titleGroupNode =& XMLCustomWriter::createElement($doc, 'title-group');
 		XMLCustomWriter::appendChild($articleMetaNode, $titleGroupNode);
 		
-		// Article-title(s) node(s).
+		// Article-title(s) group(s).
 		Ojs2ScieloExportDom::getArticleTitle($article, $titleGroupNode);
 		
 		// Contrib-group node(s).
 		$contribGroupNode =& XMLCustomWriter::createElement($doc, 'contrib-group');
 		XMLCustomWriter::appendChild($articleMetaNode, $contribGroupNode);
 		
-		// Authors node.
+		// Authors group.
 		Ojs2ScieloExportDom::getArticleAuthors($article, $contribGroupNode);
 		
-		// Affiliation node(s).
+		// Affiliation group(s).
 		Ojs2ScieloExportDom::getAuthorsAffiliation($article, $articleMetaNode);
 		
 		// Author-notes node.
@@ -173,10 +173,10 @@ class Ojs2ScieloExportDom {
 		// nodes. This group is similar to the "kwd-group", with the exception that it contains the translation language
 		// as an attribute of the node.
 		
-		// Funding-group node.
+		// Funding-group group.
 		Ojs2ScieloExportDom::addFundingGroup($doc, $articleMetaNode);
 		
-		// Counts node.
+		// Counts group.
 		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode);
 	}
 	
