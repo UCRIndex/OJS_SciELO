@@ -108,17 +108,17 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		XMLCustomWriter::appendChild($articleMetaNode, $titleGroupNode);
 		
 		// Article-title(s) group(s).
-		Ojs2ScieloExportDom::getArticleTitle($article, $titleGroupNode);
+		Ojs2ScieloExportDom::getArticleTitle($doc, $article, $titleGroupNode);
 		
 		// Contrib-group node(s).
 		$contribGroupNode =& XMLCustomWriter::createElement($doc, 'contrib-group');
 		XMLCustomWriter::appendChild($articleMetaNode, $contribGroupNode);
 		
 		// Authors group.
-		Ojs2ScieloExportDom::getArticleAuthors($article, $contribGroupNode);
+		Ojs2ScieloExportDom::getArticleAuthors($doc, $article, $contribGroupNode);
 		
 		// Affiliation group(s).
-		Ojs2ScieloExportDom::getAuthorsAffiliation($article, $articleMetaNode);
+		Ojs2ScieloExportDom::getAuthorsAffiliation($doc, $article, $articleMetaNode);
 		
 		// Author-notes node.
 		$authorNotesNode =& XMLCustomWriter::createElement($doc, 'author-notes');
@@ -468,7 +468,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * @$article from where the titles are going to be extracted.
 	 * @$titleGroupNode father node.
 	 */
-	private function getArticleTitle(&$article, &$titleGroupNode) {
+	private function getArticleTitle(&$doc, &$article, &$titleGroupNode) {
 		// Checks if the article contains more than one title.
 		if (is_array($article->getTitle(null))) foreach ($article->getTitle(null) as $locale => $title) {
 			if($article->getLocale() == $locale) {
@@ -495,7 +495,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * @$article from where the authors are going to be extracted.
 	 * @$contribGroupNode father node.
 	 */
-	private function getArticleAuthors(&$article, &$contribGroupNode) {
+	private function getArticleAuthors(&$doc, &$article, &$contribGroupNode) {
 		$i = 1; // Integer that indicates the position of the author in the XML tree.
 		foreach ($article->getAuthors() as $author) {
 			// Contrib node.
@@ -535,7 +535,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * @$article from where the affiliations are going to be extracted.
 	 * @$articleMetaNode father node.
 	 */
-	private function getAuthorsAffiliation(&$article, &$articleMetaNode) {
+	private function getAuthorsAffiliation(&$doc, &$article, &$articleMetaNode) {
 		$j = 1; // Integer that indicates the position of the affiliation of an author in the XML tree. In order to make sense, this variable and the one in the function "getArticleAuthors" must match.
 		foreach ($article->getAuthors() as $author) {
 			// Aff node.
