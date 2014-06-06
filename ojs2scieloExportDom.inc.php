@@ -14,7 +14,6 @@
  * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
  */
 
-
 import('lib.pkp.classes.xml.XMLCustomWriter');
 
 define('NATIVE_DTD_URL', 'http://pkp.sfu.ca/ojs/dtds/2.3/native.dtd');
@@ -151,20 +150,11 @@ class Ojs2ScieloExportDom {
 		// Lpage node.
 		$lPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'lpage', 'addlpage', false);
 		
+		// History group.
 		Ojs2ScieloExportDom::addHistory($doc, $articleMetaNode);
 		
-		// Permissions node.
-		$permissionsNode =& XMLCustomWriter::createElement($doc, 'permissions');
-		XMLCustomWriter::appendChild($articleMetaNode, $permissionsNode);
-		
-		// License node.
-		$licenseNode =& XMLCustomWriter::createElement($doc, 'license');
-		XMLCustomWriter::setAttribute($licenseNode, 'license-type', 'addlicensetype');
-		XMLCustomWriter::setAttribute($licenseNode, 'xlink:href', 'addhref');
-		XMLCustomWriter::appendChild($permissionsNode, $licenseNode);
-		
-		// License-p node.
-		$licensePNode =& XMLCustomWriter::createChildWithText($doc, $licenseNode, 'license-p', 'addlicense-p', false);
+		// Permissions group.
+		Ojs2ScieloExportDom::addPermissions($doc, $articleMetaNode);
 		
 		// Abstract node.
 		$abstractNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'abstract', 'addabstract', false);
@@ -313,6 +303,21 @@ class Ojs2ScieloExportDom {
 		
 		// Award-id node.
 		$awardIDNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'award-id', 'addaward-id', false);
+	}
+	
+	private function addPermissions(&$doc, &$articleMetaNode) {
+		// Permissions node.
+		$permissionsNode =& XMLCustomWriter::createElement($doc, 'permissions');
+		XMLCustomWriter::appendChild($articleMetaNode, $permissionsNode);
+		
+		// License node.
+		$licenseNode =& XMLCustomWriter::createElement($doc, 'license');
+		XMLCustomWriter::setAttribute($licenseNode, 'license-type', 'addlicensetype');
+		XMLCustomWriter::setAttribute($licenseNode, 'xlink:href', 'addhref');
+		XMLCustomWriter::appendChild($permissionsNode, $licenseNode);
+		
+		// License-p node.
+		$licensePNode =& XMLCustomWriter::createChildWithText($doc, $licenseNode, 'license-p', 'addlicense-p', false);
 	}
 	
 	/*
