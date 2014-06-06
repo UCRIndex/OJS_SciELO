@@ -77,7 +77,7 @@ class Ojs2ScieloExportDom {
 		$frontNode =& XMLCustomWriter::createElement($doc, 'front');
 		XMLCustomWriter::appendChild($header, $frontNode);
 		
-		// Journal-meta node.
+		// Journal-meta group.
 		Ojs2ScieloExportDom::addJournalMeta($doc, $frontNode, $journal);
 		
 		// Article-meta node.
