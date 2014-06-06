@@ -198,28 +198,7 @@ class Ojs2ScieloExportDom {
 		$awardIDNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'award-id', 'addaward-id', false);
 		
 		// Counts node.
-		$countsNode =& XMLCustomWriter::createElement($doc, 'counts');
-		XMLCustomWriter::appendChild($articleMetaNode, $countsNode);
-		
-		// Fig-count node (number of figures in the article).
-		$figCountNode =& XMLCustomWriter::createElement($doc, 'fig-count');
-		XMLCustomWriter::setAttribute($figCountNode, 'count', 'addcount');
-		XMLCustomWriter::appendChild($countsNode, $figCountNode);
-		
-		// Table-count node (number of tables in the article).
-		$tableCountNode =& XMLCustomWriter::createElement($doc, 'table-count');
-		XMLCustomWriter::setAttribute($tableCountNode, 'count', 'addcount');
-		XMLCustomWriter::appendChild($countsNode, $tableCountNode);
-		
-		// Ref-count node (number of references in the article).
-		$refCountNode =& XMLCustomWriter::createElement($doc, 'ref-count');
-		XMLCustomWriter::setAttribute($refCountNode, 'count', 'addcount');
-		XMLCustomWriter::appendChild($countsNode, $refCountNode);
-		
-		// Page-count node (numbrer of pages in the article).
-		$pageCountNode =& XMLCustomWriter::createElement($doc, 'page-count');
-		XMLCustomWriter::setAttribute($pageCountNode, 'count', 'addcount');
-		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
+		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode);
 	}
 	
 	private function addJournalMeta(&$doc, &$frontNode, &$journal) {
@@ -304,6 +283,32 @@ class Ojs2ScieloExportDom {
 		
 		// Year-accepted node.
 		$yearAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'year', 'addyear', false);
+	}
+	
+	private function addCounts(&$doc, &$articleMetaNode) {
+		// Counts node.
+		$countsNode =& XMLCustomWriter::createElement($doc, 'counts');
+		XMLCustomWriter::appendChild($articleMetaNode, $countsNode);
+		
+		// Fig-count node (number of figures in the article).
+		$figCountNode =& XMLCustomWriter::createElement($doc, 'fig-count');
+		XMLCustomWriter::setAttribute($figCountNode, 'count', 'addcount');
+		XMLCustomWriter::appendChild($countsNode, $figCountNode);
+		
+		// Table-count node (number of tables in the article).
+		$tableCountNode =& XMLCustomWriter::createElement($doc, 'table-count');
+		XMLCustomWriter::setAttribute($tableCountNode, 'count', 'addcount');
+		XMLCustomWriter::appendChild($countsNode, $tableCountNode);
+		
+		// Ref-count node (number of references in the article).
+		$refCountNode =& XMLCustomWriter::createElement($doc, 'ref-count');
+		XMLCustomWriter::setAttribute($refCountNode, 'count', 'addcount');
+		XMLCustomWriter::appendChild($countsNode, $refCountNode);
+		
+		// Page-count node (numbrer of pages in the article).
+		$pageCountNode =& XMLCustomWriter::createElement($doc, 'page-count');
+		XMLCustomWriter::setAttribute($pageCountNode, 'count', 'addcount');
+		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
 	}
 	
 	/*
