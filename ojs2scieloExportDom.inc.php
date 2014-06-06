@@ -184,7 +184,7 @@ class Ojs2ScieloExportDom {
 		// as an attribute of the node.
 		
 		// Funding-group node.
-		Ojs2ScieloExportDom::addFundingGroup ($doc, $articleMetaNode);
+		Ojs2ScieloExportDom::addFundingGroup($doc, $articleMetaNode);
 		
 		// Counts node.
 		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode);
@@ -300,7 +300,7 @@ class Ojs2ScieloExportDom {
 		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
 	}
 	
-	private function addFundingGroup (&$doc, &$articleMetaNode) {
+	private function addFundingGroup(&$doc, &$articleMetaNode) {
 		$fundingGroupNode =& XMLCustomWriter::createElement($doc, 'funding-group');
 		XMLCustomWriter::appendChild($articleMetaNode, $fundingGroupNode);
 		
