@@ -178,9 +178,102 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		// Counts group.
 		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode);
 	}
+	
+	/*
+	 * This method adds the body node to the XML document. For now, it just contains the basic node.
+	 * Here, the nodes are tied to the content of the document, so there must be a strategy to extract the body from the document and
+	 * transform these sections into nodes (paragraphs, titles, tables, etc.).
+	 */
+	private function addBodyNode(&$article, &$doc, &$header) {
+		// Body node.
+		$bodyNode =& XMLCustomWriter::createElement($doc, 'body');
+		XMLCustomWriter::appendChild($header, $bodyNode);
+	}
+	
+	/*
+	 * addBackNode creates the structure for the "back" node. For now, it just has the basic requirements, but later some of these
+	 * groups of nodes must be replicated; for instance: "ref-list". This is directly related to the content of the documents.
+	 */
+	private function addBackNode(&$article, &$doc, &$header) {
+		// Back node.
+		$backNode =& XMLCustomWriter::createElement($doc, 'back');
+		XMLCustomWriter::appendChild($header, $backNode);
+		
+		// Ack node.
+		$ackNode =& XMLCustomWriter::createElement($doc, 'ack');
+		XMLCustomWriter::appendChild($backNode, $ackNode);
+		
+		// Sec node.
+		$secAckNode =& XMLCustomWriter::createElement($doc, 'sec');
+		XMLCustomWriter::appendChild($ackNode, $secAckNode);
+		
+		// Title node.
+		$titleSecNode =& XMLCustomWriter::createChildWithText($doc, $secAckNode, 'title', 'ACKNOWLEDGMENTS', false);
+		
+		// P (acknowledgments paragraph) node.
+		$pNode =& XMLCustomWriter::createChildWithText($doc, $secAckNode, 'p', 'addacknowledgments', false);
+		
+		// Ref-list node (repeat this group for each reference).
+		$refListNode =& XMLCustomWriter::createElement($doc, 'ref-list');
+		XMLCustomWriter::appendChild($backNode, $refListNode);
+		
+		// Title node.
+		$titleSecNode =& XMLCustomWriter::createChildWithText($doc, $refListNode, 'title', 'REFERENCES', false);
+		
+		// Ref node.
+		$refNode =& XMLCustomWriter::createElement($doc, 'ref');
+		XMLCustomWriter::setAttribute($refNode, 'id', 'addid');
+		XMLCustomWriter::appendChild($refListNode, $refNode);
+		
+		// Label node.
+		$labelNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'label', 'addlabel', false);
+		
+		// Element-citation node.
+		$elementCitationNode =& XMLCustomWriter::createElement($doc, 'element-citation');
+		XMLCustomWriter::setAttribute($elementCitationNode, 'publication-type', 'journal');
+		XMLCustomWriter::appendChild($refNode, $elementCitationNode);
+		
+		// Person-group node.
+		$personGroupNode =& XMLCustomWriter::createElement($doc, 'person-group');
+		XMLCustomWriter::setAttribute($personGroupNode, 'person-group-type', 'author');
+		XMLCustomWriter::appendChild($elementCitationNode, $personGroupNode);
+		
+		// Name node (repeat this group for each author).
+		$nameRefNode =& XMLCustomWriter::createElement($doc, 'name');
+		XMLCustomWriter::appendChild($personGroupNode, $nameRefNode);
+		
+		// Surname node.
+		$surnameRefNode =& XMLCustomWriter::createChildWithText($doc, $nameRefNode, 'surname', 'addsurname', false);
+		
+		// Given-names node.
+		$givenNamesRefNode =& XMLCustomWriter::createChildWithText($doc, $nameRefNode, 'given-names', 'addgiven-names', false);
+		
+		// Article-title node.
+		$articleTitleRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'article-title', 'addarticle-title', false);
+		XMLCustomWriter::setAttribute($articleTitleRefNode, 'xml:lang', 'addlang');
+		
+		// Source node.
+		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'source', 'addsource', false);
+		XMLCustomWriter::setAttribute($sourceRefNode, 'xml:lang', 'addlang');
+		
+		// Year node.
+		$yearRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'year', 'addyear', false);
+		
+		// Volume node.
+		$volumeRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'volume', 'addvolume', false);
+		
+		// Fpage node.
+		$fpageRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'fpage', 'addfpage', false);
+		
+		// Lpage node.
+		$lpageRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'lpage', 'addlpage', false);
+		
+		// Mixed-citation node.
+		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'mixed-citation', 'addmixed-citation', false);
+	}
 
-
-/*
+	
+	/*
 	 * This function gets and adds the journal nodes to the tree. It is used inside "addFrontNode".
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$frontNode: XML front node (father node).
@@ -357,99 +450,6 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	}
 	
 	/*
-	 * This method adds the body node to the XML document. For now, it just contains the basic node.
-	 * Here, the nodes are tied to the content of the document, so there must be a strategy to extract the body from the document and
-	 * transform these sections into nodes (paragraphs, titles, tables, etc.).
-	 */
-	private function addBodyNode(&$article, &$doc, &$header) {
-		// Body node.
-		$bodyNode =& XMLCustomWriter::createElement($doc, 'body');
-		XMLCustomWriter::appendChild($header, $bodyNode);
-	}
-	
-	/*
-	 * addBackNode creates the structure for the "back" node. For now, it just has the basic requirements, but later some of these
-	 * groups of nodes must be replicated; for instance: "ref-list". This is directly related to the content of the documents.
-	 */
-	private function addBackNode(&$article, &$doc, &$header) {
-		// Back node.
-		$backNode =& XMLCustomWriter::createElement($doc, 'back');
-		XMLCustomWriter::appendChild($header, $backNode);
-		
-		// Ack node.
-		$ackNode =& XMLCustomWriter::createElement($doc, 'ack');
-		XMLCustomWriter::appendChild($backNode, $ackNode);
-		
-		// Sec node.
-		$secAckNode =& XMLCustomWriter::createElement($doc, 'sec');
-		XMLCustomWriter::appendChild($ackNode, $secAckNode);
-		
-		// Title node.
-		$titleSecNode =& XMLCustomWriter::createChildWithText($doc, $secAckNode, 'title', 'ACKNOWLEDGMENTS', false);
-		
-		// P (acknowledgments paragraph) node.
-		$pNode =& XMLCustomWriter::createChildWithText($doc, $secAckNode, 'p', 'addacknowledgments', false);
-		
-		// Ref-list node (repeat this group for each reference).
-		$refListNode =& XMLCustomWriter::createElement($doc, 'ref-list');
-		XMLCustomWriter::appendChild($backNode, $refListNode);
-		
-		// Title node.
-		$titleSecNode =& XMLCustomWriter::createChildWithText($doc, $refListNode, 'title', 'REFERENCES', false);
-		
-		// Ref node.
-		$refNode =& XMLCustomWriter::createElement($doc, 'ref');
-		XMLCustomWriter::setAttribute($refNode, 'id', 'addid');
-		XMLCustomWriter::appendChild($refListNode, $refNode);
-		
-		// Label node.
-		$labelNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'label', 'addlabel', false);
-		
-		// Element-citation node.
-		$elementCitationNode =& XMLCustomWriter::createElement($doc, 'element-citation');
-		XMLCustomWriter::setAttribute($elementCitationNode, 'publication-type', 'journal');
-		XMLCustomWriter::appendChild($refNode, $elementCitationNode);
-		
-		// Person-group node.
-		$personGroupNode =& XMLCustomWriter::createElement($doc, 'person-group');
-		XMLCustomWriter::setAttribute($personGroupNode, 'person-group-type', 'author');
-		XMLCustomWriter::appendChild($elementCitationNode, $personGroupNode);
-		
-		// Name node (repeat this group for each author).
-		$nameRefNode =& XMLCustomWriter::createElement($doc, 'name');
-		XMLCustomWriter::appendChild($personGroupNode, $nameRefNode);
-		
-		// Surname node.
-		$surnameRefNode =& XMLCustomWriter::createChildWithText($doc, $nameRefNode, 'surname', 'addsurname', false);
-		
-		// Given-names node.
-		$givenNamesRefNode =& XMLCustomWriter::createChildWithText($doc, $nameRefNode, 'given-names', 'addgiven-names', false);
-		
-		// Article-title node.
-		$articleTitleRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'article-title', 'addarticle-title', false);
-		XMLCustomWriter::setAttribute($articleTitleRefNode, 'xml:lang', 'addlang');
-		
-		// Source node.
-		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'source', 'addsource', false);
-		XMLCustomWriter::setAttribute($sourceRefNode, 'xml:lang', 'addlang');
-		
-		// Year node.
-		$yearRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'year', 'addyear', false);
-		
-		// Volume node.
-		$volumeRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'volume', 'addvolume', false);
-		
-		// Fpage node.
-		$fpageRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'fpage', 'addfpage', false);
-		
-		// Lpage node.
-		$lpageRefNode =& XMLCustomWriter::createChildWithText($doc, $elementCitationNode, 'lpage', 'addlpage', false);
-		
-		// Mixed-citation node.
-		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'mixed-citation', 'addmixed-citation', false);
-	}
-	
-	/*
 	 * Searches for the ISSN of a journal. The function excecutes three queries: print ISSN, ISSN or online ISSN; otherwise, it returns
 	 * an empty variable.
 	 * @journal refers to the selected journal.
@@ -465,6 +465,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	
 	/*
 	 * This function obtains the title or titles of an article and adds them to the tree of nodes.
+	 * @$doc XML document created by XMLCustomWriter.
 	 * @$article from where the titles are going to be extracted.
 	 * @$titleGroupNode father node.
 	 */
@@ -492,6 +493,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	
 	/*
 	 * This function obtains the author or authors of an article and adds them to the tree of nodes.
+	 * @$doc XML document created by XMLCustomWriter.
 	 * @$article from where the authors are going to be extracted.
 	 * @$contribGroupNode father node.
 	 */
@@ -532,6 +534,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	
 	/*
 	 * This function obtains the affiliation an author and adds them to the tree of nodes.
+	 * @$doc XML document created by XMLCustomWriter.
 	 * @$article from where the affiliations are going to be extracted.
 	 * @$articleMetaNode father node.
 	 */
