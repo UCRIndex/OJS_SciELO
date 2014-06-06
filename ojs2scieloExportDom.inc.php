@@ -180,6 +180,12 @@ class Ojs2ScieloExportDom {
 		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode);
 	}
 	
+	/*
+	 * This function gets and adds the journal nodes to the tree. It is used inside "addFrontNode".
+	 * @$doc: XML document created by XMLCustomWriter.
+	 * @$frontNode: XML front node (father node).
+	 * @$journal: selected journal (object).
+	 */
 	private function addJournalMeta(&$doc, &$frontNode, &$journal) {
 		// Journal-meta node.
 		$journalMetaNode =& XMLCustomWriter::createElement($doc, 'journal-meta');
@@ -215,6 +221,12 @@ class Ojs2ScieloExportDom {
 		$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'addpublisher-name', false);
 	}
 	
+	/*
+	 * This function gets and adds the publication date nodes to the tree. It is used inside "addFrontNode".
+	 * @$doc: XML document created by XMLCustomWriter.
+	 * @$articleMetaNode: XML front node (father node).
+	 * @$article: selected journal (object).
+	 */
 	private function addPubDate(&$doc, &$articleMetaNode, &$article) {
 		// Pub-date node.
 		$pubDateNode =& XMLCustomWriter::createElement($doc, 'pub-date');
@@ -230,6 +242,12 @@ class Ojs2ScieloExportDom {
 		$yearNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'year', $year, false);
 	}
 	
+	/*
+	 * This function gets and adds the history nodes to the tree. It is used inside "addFrontNode". The parameter list must
+	 * be modified in order to add content to the nodes.
+	 * @$doc: XML document created by XMLCustomWriter.
+	 * @$articleMetaNode: XML front node (father node).
+	 */
 	private function addHistory(&$doc, &$articleMetaNode) {
 		// History node.
 		$historyNode =& XMLCustomWriter::createElement($doc, 'history');
@@ -264,6 +282,12 @@ class Ojs2ScieloExportDom {
 		$yearAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'year', 'addyear', false);
 	}
 	
+	/*
+	 * This function gets and adds the counts nodes to the tree. It is used inside "addFrontNode". The parameter list must
+	 * be modified in order to add content to the nodes.
+	 * @$doc: XML document created by XMLCustomWriter.
+	 * @$articleMetaNode: XML front node (father node).
+	 */
 	private function addCounts(&$doc, &$articleMetaNode) {
 		// Counts node.
 		$countsNode =& XMLCustomWriter::createElement($doc, 'counts');
@@ -290,6 +314,12 @@ class Ojs2ScieloExportDom {
 		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
 	}
 	
+	/*
+	 * This function gets and adds the funding group nodes to the tree. It is used inside "addFrontNode". The parameter list must
+	 * be modified in order to add content to the nodes.
+	 * @$doc: XML document created by XMLCustomWriter.
+	 * @$articleMetaNode: XML front node (father node).
+	 */
 	private function addFundingGroup(&$doc, &$articleMetaNode) {
 		$fundingGroupNode =& XMLCustomWriter::createElement($doc, 'funding-group');
 		XMLCustomWriter::appendChild($articleMetaNode, $fundingGroupNode);
@@ -305,6 +335,12 @@ class Ojs2ScieloExportDom {
 		$awardIDNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'award-id', 'addaward-id', false);
 	}
 	
+	/*
+	 * This function gets and adds the funding group nodes to the tree. It is used inside "addFrontNode". The parameter list must
+	 * be modified in order to add content to the nodes.
+	 * @$doc: XML document created by XMLCustomWriter.
+	 * @$articleMetaNode: XML front node (father node).
+	 */
 	private function addPermissions(&$doc, &$articleMetaNode) {
 		// Permissions node.
 		$permissionsNode =& XMLCustomWriter::createElement($doc, 'permissions');
