@@ -78,7 +78,8 @@ class Ojs2ScieloExportDom {
 		$frontNode =& XMLCustomWriter::createElement($doc, 'front');
 		XMLCustomWriter::appendChild($header, $frontNode);
 		
-		XMLCustomWriter::addJournalMeta($doc, $frontNode, $journal);
+		// Journal-meta node.
+		Ojs2ScieloExportDom::addJournalMeta($doc, $frontNode, $journal);
 		
 		// Article-meta node.
 		$articleMetaNode =& XMLCustomWriter::createElement($doc, 'article-meta');
@@ -136,17 +137,7 @@ class Ojs2ScieloExportDom {
 		$personalEmailNode =& XMLCustomWriter::createChildWithText($doc, $correspNode, 'email', 'addemail', false);
 		
 		// Pub-date node.
-		$pubDateNode =& XMLCustomWriter::createElement($doc, 'pub-date');
-		XMLCustomWriter::setAttribute($pubDateNode, 'pub-type', 'epub-ppub');
-		XMLCustomWriter::appendChild($articleMetaNode, $pubDateNode);
-		
-		// Season node.
-		$season = Ojs2ScieloExportDom::getSeason($article);
-		$seasonNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'season', $season, false);
-		
-		// Year node.
-		$year = date('Y', strtotime($article->getDatePublished())); // Gets the year of the publication by using the label 'Y'.
-		$yearNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'year', $year, false);
+		Ojs2ScieloExportDom::addPubDate($doc, $articleMetaNode, $article);
 		
 		// Volume node.
 		$volumeNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'volume', 'addvolume', false);
@@ -160,37 +151,7 @@ class Ojs2ScieloExportDom {
 		// Lpage node.
 		$lPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'lpage', 'addlpage', false);
 		
-		// History node.
-		$historyNode =& XMLCustomWriter::createElement($doc, 'history');
-		XMLCustomWriter::appendChild($articleMetaNode, $historyNode);
-		
-		// Date-type received node.
-		$dateTypeRecivedNode =& XMLCustomWriter::createElement($doc, 'date');
-		XMLCustomWriter::setAttribute($dateTypeRecivedNode, 'date-type', 'received');
-		XMLCustomWriter::appendChild($historyNode, $dateTypeRecivedNode);
-		
-		// Day-received node.
-		$dayRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'day', 'addday', false);
-		
-		// Month-received node.
-		$monthRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'month', 'addmonth', false);
-		
-		// Year-received node.
-		$yearRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'year', 'addyear', false);
-		
-		// Date-type accepted node.
-		$dateTypeAcceptedNode =& XMLCustomWriter::createElement($doc, 'date');
-		XMLCustomWriter::setAttribute($dateTypeAcceptedNode, 'date-type', 'accepted');
-		XMLCustomWriter::appendChild($historyNode, $dateTypeAcceptedNode);
-		
-		// Day-accepted node.
-		$dayAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'day', 'addday', false);
-		
-		// Month-accepted node.
-		$monthAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'month', 'addmonth', false);
-		
-		// Year-accepted node.
-		$yearAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'year', 'addyear', false);
+		Ojs2ScieloExportDom::addHistory($doc, $articleMetaNode);
 		
 		// Permissions node.
 		$permissionsNode =& XMLCustomWriter::createElement($doc, 'permissions');
@@ -294,6 +255,55 @@ class Ojs2ScieloExportDom {
 
 		// Publisher-name node.
 		$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'addpublisher-name', false);
+	}
+	
+	private function addPubDate(&$doc, &$articleMetaNode, &$article) {
+		// Pub-date node.
+		$pubDateNode =& XMLCustomWriter::createElement($doc, 'pub-date');
+		XMLCustomWriter::setAttribute($pubDateNode, 'pub-type', 'epub-ppub');
+		XMLCustomWriter::appendChild($articleMetaNode, $pubDateNode);
+		
+		// Season node.
+		$season = Ojs2ScieloExportDom::getSeason($article);
+		$seasonNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'season', $season, false);
+		
+		// Year node.
+		$year = date('Y', strtotime($article->getDatePublished())); // Gets the year of the publication by using the label 'Y'.
+		$yearNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'year', $year, false);
+	}
+	
+	private function addHistory(&$doc, &$articleMetaNode) {
+		// History node.
+		$historyNode =& XMLCustomWriter::createElement($doc, 'history');
+		XMLCustomWriter::appendChild($articleMetaNode, $historyNode);
+		
+		// Date-type received node.
+		$dateTypeRecivedNode =& XMLCustomWriter::createElement($doc, 'date');
+		XMLCustomWriter::setAttribute($dateTypeRecivedNode, 'date-type', 'received');
+		XMLCustomWriter::appendChild($historyNode, $dateTypeRecivedNode);
+		
+		// Day-received node.
+		$dayRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'day', 'addday', false);
+		
+		// Month-received node.
+		$monthRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'month', 'addmonth', false);
+		
+		// Year-received node.
+		$yearRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'year', 'addyear', false);
+		
+		// Date-type accepted node.
+		$dateTypeAcceptedNode =& XMLCustomWriter::createElement($doc, 'date');
+		XMLCustomWriter::setAttribute($dateTypeAcceptedNode, 'date-type', 'accepted');
+		XMLCustomWriter::appendChild($historyNode, $dateTypeAcceptedNode);
+		
+		// Day-accepted node.
+		$dayAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'day', 'addday', false);
+		
+		// Month-accepted node.
+		$monthAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'month', 'addmonth', false);
+		
+		// Year-accepted node.
+		$yearAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'year', 'addyear', false);
 	}
 	
 	/*
@@ -495,7 +505,7 @@ class Ojs2ScieloExportDom {
 			// Extracts the information each author.
 			if (is_array($affiliations)) foreach ($affiliations as $locale => $affiliation) {
 				$i++;
-				$orgDiv = "orgdiv" . $i; // Concatenates the division with the number of affiliation.
+				$orgDiv = "orgdiv" . $i; // Concatenates the division where the author belongs with the number of affiliation.
 
 				// Orgdiv node.
 				$orgDivNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'institution', $affiliation, false);
