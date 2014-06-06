@@ -184,18 +184,7 @@ class Ojs2ScieloExportDom {
 		// as an attribute of the node.
 		
 		// Funding-group node.
-		$fundingGroupNode =& XMLCustomWriter::createElement($doc, 'funding-group');
-		XMLCustomWriter::appendChild($articleMetaNode, $fundingGroupNode);
-		
-		// Award-group node.
-		$awardGroupNode =& XMLCustomWriter::createElement($doc, 'award-group');
-		XMLCustomWriter::appendChild($fundingGroupNode, $awardGroupNode);
-		
-		// Funding-source node.
-		$fundingSourceNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'funding-source', 'addfunding-source', false);
-		
-		// Award-id node.
-		$awardIDNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'award-id', 'addaward-id', false);
+		Ojs2ScieloExportDom::addFundingGroup ($doc, $articleMetaNode);
 		
 		// Counts node.
 		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode);
@@ -309,6 +298,21 @@ class Ojs2ScieloExportDom {
 		$pageCountNode =& XMLCustomWriter::createElement($doc, 'page-count');
 		XMLCustomWriter::setAttribute($pageCountNode, 'count', 'addcount');
 		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
+	}
+	
+	private function addFundingGroup (&$doc, &$articleMetaNode) {
+		$fundingGroupNode =& XMLCustomWriter::createElement($doc, 'funding-group');
+		XMLCustomWriter::appendChild($articleMetaNode, $fundingGroupNode);
+		
+		// Award-group node.
+		$awardGroupNode =& XMLCustomWriter::createElement($doc, 'award-group');
+		XMLCustomWriter::appendChild($fundingGroupNode, $awardGroupNode);
+		
+		// Funding-source node.
+		$fundingSourceNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'funding-source', 'addfunding-source', false);
+		
+		// Award-id node.
+		$awardIDNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'award-id', 'addaward-id', false);
 	}
 	
 	/*
