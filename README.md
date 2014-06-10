@@ -4,7 +4,7 @@ Modificación del plugin "native" para exportar a SciELO.
 Dudas sobre el esquema SciELO:
 ==============================
 
-¿Sponsor (OJS) se refiere a lo mismo que Funding source (SciELO)? El nodo <journal-id journal-id-type="nlm-ta">, ¿puede ser un entero? ¿A qué hace referencia el nodo <award-id>?
+¿Sponsor (OJS) se refiere a lo mismo que Funding source (SciELO)? El nodo: journal-id journal-id-type="nlm-ta", ¿puede ser un entero? ¿A qué hace referencia el nodo <award-id>?
 
 Pendiende (en proceso):
 =======================
