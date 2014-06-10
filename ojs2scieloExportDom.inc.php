@@ -130,9 +130,15 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		Ojs2ScieloExportDom::addHistory($doc, $articleMetaNode); // Attaches the History group of nodes to the XML document.
 		
 		Ojs2ScieloExportDom::addPermissions($doc, $articleMetaNode); // Attaches the Permissions group of nodes to the XML document.
-		
-		$abstractNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'abstract', 'addabstract', false); // Abstract node.
-		XMLCustomWriter::setAttribute($abstractNode, 'xml:lang', 'addlang');
+
+		if (is_array($article->getAbstract(null))) foreach ($article->getAbstract(null) as $locale => $abstract) {
+			$abstractNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'abstract', $abstract, false);
+			if ($abstractNode) {
+				$lang = substr($locale, 0, 2); // Locale contains the localization of the document (es_ES, en_EN, etc.), so to obtain the idiom we just take the first two letters from the string (es, en, etc.).
+				XMLCustomWriter::setAttribute($abstractNode, 'xml:lang', $lang);
+			}
+			unset($abstractNode);
+		}
 		
 		// Inside the abstract node, there are the "title" and "paragraph" nodes. These nodes do not appear in
 		// this schema because they depend on the content of the abstact. However, they must be attached in
@@ -221,7 +227,6 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		
 		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'mixed-citation', 'addmixed-citation', false); // Mixed-citation node.
 	}
-
 
 	/*
 	 * This function gets and adds the journal nodes to the XML tree. It is used inside "addFrontNode".
