@@ -224,7 +224,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 
 
 	/*
-	 * This function gets and adds the journal nodes to the tree. It is used inside "addFrontNode".
+	 * This function gets and adds the journal nodes to the XML tree. It is used inside "addFrontNode".
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$frontNode: XML front node (father node).
 	 * @$journal: selected journal (object).
@@ -257,7 +257,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	}
 	
 	/*
-	 * This function gets and adds the publication date nodes to the tree. It is used inside "addFrontNode".
+	 * This function gets and adds the publication date nodes to the XML tree. It is used inside "addFrontNode".
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$articleMetaNode: XML front node (father node).
 	 * @$article: selected journal (object).
@@ -275,7 +275,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	}
 	
 	/*
-	 * This function gets and adds the history nodes to the tree. It is used inside "addFrontNode". The parameter list must
+	 * This function gets and adds the history nodes to the XML tree. It is used inside "addFrontNode". The parameter list must
 	 * be modified in order to add content to the nodes.
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$articleMetaNode: XML front node (father node).
@@ -333,7 +333,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	}
 	
 	/*
-	 * This function gets and adds the funding group nodes to the tree. It is used inside "addFrontNode". The parameter list must
+	 * This function gets and adds the funding group nodes to the XML tree. It is used inside "addFrontNode". The parameter list must
 	 * be modified in order to add content to the nodes.
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$articleMetaNode: XML front node (father node).
@@ -351,7 +351,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	}
 	
 	/*
-	 * This function gets and adds the funding group nodes to the tree. It is used inside "addFrontNode". The parameter list must
+	 * This function gets and adds the funding group nodes to the XML tree. It is used inside "addFrontNode". The parameter list must
 	 * be modified in order to add content to the nodes.
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$articleMetaNode: XML front node (father node).
@@ -372,7 +372,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * Searches for the ISSN of a journal. The function excecutes three queries: print ISSN, ISSN or online ISSN; otherwise, it returns
 	 * an empty variable.
 	 * @journal refers to the selected journal.
-	 * @return value of the ISSN or an empty value if it was not found.
+	 * @return the ISSN of the publication or an empty value if it was not found.
 	 */
 	private function getISSN(&$journal) {
 		if ($journal->getSetting('printIssn') != '') $issn = $journal->getSetting('printIssn');
