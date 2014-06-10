@@ -306,7 +306,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	}
 	
 	/*
-	 * This function gets and adds the counts nodes to the tree. It is used inside "addFrontNode". The parameter list must
+	 * This function gets and adds the counts nodes to the XML tree. It is used inside "addFrontNode". The parameter list must
 	 * be modified in order to add content to the nodes.
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$articleMetaNode: XML front node (father node).
