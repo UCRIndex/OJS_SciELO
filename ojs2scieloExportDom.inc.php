@@ -22,7 +22,6 @@ define('NATIVE_DTD_ID', '-//PKP//OJS Articles and Issues XML//EN');
 /*
  * This class exports an article to a XML using the XMLCustomWriter class already implemented (for more information about
  * the creation of nodes and attributes: http://pkp.sfu.ca/ojs/doxygen/stable/html/XMLCustomWriter_8inc_8php_source.html).
- * Most methods are used for modularization (construction of each main node) and gather information.
  * Note: each string that contains 'add' plus the attibute (node name) must be replace with the corresponding information.
  */
 class Ojs2ScieloExportDom extends ImportExportPlugin {
