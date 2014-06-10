@@ -7,7 +7,7 @@
  * Copyright (c) 2003-2014 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * @class Ojs2ScieloExportDomM
+ * @class Ojs2ScieloExportDom
  * @ingroup plugins_importexport_native
  *
  * @brief import/export plugin DOM functions for export
