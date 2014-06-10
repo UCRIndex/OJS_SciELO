@@ -76,7 +76,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$frontNode =& XMLCustomWriter::createElement($doc, 'front'); // Front node.
 		XMLCustomWriter::appendChild($header, $frontNode);
 		
-		Ojs2ScieloExportDom::addJournalMeta($doc, $frontNode, $journal); // Journal-meta group.
+		Ojs2ScieloExportDom::addJournalMeta($doc, $frontNode, $journal); // Attaches the Journal-meta group of nodes to the XML document.
 		
 		$articleMetaNode =& XMLCustomWriter::createElement($doc, 'article-meta'); // Article-meta node.
 		XMLCustomWriter::appendChild($frontNode, $articleMetaNode);
@@ -99,14 +99,14 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$titleGroupNode =& XMLCustomWriter::createElement($doc, 'title-group'); // Title-group node.
 		XMLCustomWriter::appendChild($articleMetaNode, $titleGroupNode);
 		
-		Ojs2ScieloExportDom::getArticleTitle($doc, $article, $titleGroupNode); // Article-title(s) group(s).
+		Ojs2ScieloExportDom::getArticleTitle($doc, $article, $titleGroupNode); // Attaches the Article-title group of nodes to the XML document.
 		
 		$contribGroupNode =& XMLCustomWriter::createElement($doc, 'contrib-group'); // Contrib-group node(s).
 		XMLCustomWriter::appendChild($articleMetaNode, $contribGroupNode);
 		
-		Ojs2ScieloExportDom::getArticleAuthors($doc, $article, $contribGroupNode); // Authors group.
+		Ojs2ScieloExportDom::getArticleAuthors($doc, $article, $contribGroupNode); // Attaches the Authors group of nodes to the XML document.
 		
-		Ojs2ScieloExportDom::getAuthorsAffiliation($doc, $article, $articleMetaNode); // Affiliation group(s).
+		Ojs2ScieloExportDom::getAuthorsAffiliation($doc, $article, $articleMetaNode); // Attaches the Affiliation group of nodes to the XML document.
 		
 		$authorNotesNode =& XMLCustomWriter::createElement($doc, 'author-notes'); // Author-notes node.
 		XMLCustomWriter::appendChild($articleMetaNode, $authorNotesNode);
@@ -118,7 +118,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		
 		$personalEmailNode =& XMLCustomWriter::createChildWithText($doc, $correspNode, 'email', 'addemail', false); // Personal email node.
 		
-		Ojs2ScieloExportDom::addPubDate($doc, $articleMetaNode, $article); // Pub-date node.
+		Ojs2ScieloExportDom::addPubDate($doc, $articleMetaNode, $article); // Attaches the Pub-date group of nodes to the XML document.
 		
 		$volumeNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'volume', 'addvolume', false); // Volume node.
 		
@@ -128,9 +128,9 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		
 		$lPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'lpage', 'addlpage', false); // Lpage node.
 		
-		Ojs2ScieloExportDom::addHistory($doc, $articleMetaNode); // History group.
+		Ojs2ScieloExportDom::addHistory($doc, $articleMetaNode); // Attaches the History group of nodes to the XML document.
 		
-		Ojs2ScieloExportDom::addPermissions($doc, $articleMetaNode); // Permissions group.
+		Ojs2ScieloExportDom::addPermissions($doc, $articleMetaNode); // Attaches the Permissions group of nodes to the XML document.
 		
 		$abstractNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'abstract', 'addabstract', false); // Abstract node.
 		XMLCustomWriter::setAttribute($abstractNode, 'xml:lang', 'addlang');
@@ -147,9 +147,9 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		// group of nodes. This group is similar to the "kwd-group", with the exception that it contains the translation language initials
 		// as an attribute of the node.
 		
-		Ojs2ScieloExportDom::addFundingGroup($doc, $articleMetaNode); // Funding-group group.
+		Ojs2ScieloExportDom::addFundingGroup($doc, $articleMetaNode); // Attaches the Funding-group group of nodes to the XML document.
 		
-		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode); // Counts group.
+		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode); // Attaches the Counts group of nodes to the XML document.
 	}
 	
 	/*
