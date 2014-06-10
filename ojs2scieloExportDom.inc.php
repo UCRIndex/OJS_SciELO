@@ -20,7 +20,7 @@ define('NATIVE_DTD_URL', 'http://pkp.sfu.ca/ojs/dtds/2.3/native.dtd');
 define('NATIVE_DTD_ID', '-//PKP//OJS Articles and Issues XML//EN');
 
 /*
- * This class exports an article to a XML using the XMLCustomWriter class already implemented (for more information about
+ * This class exports an article to a XML document using the XMLCustomWriter class already implemented (for more information about
  * the creation of nodes and attributes: http://pkp.sfu.ca/ojs/doxygen/stable/html/XMLCustomWriter_8inc_8php_source.html).
  * Note: each string that contains 'add' plus the attibute (node name) must be replace with the corresponding information.
  */
