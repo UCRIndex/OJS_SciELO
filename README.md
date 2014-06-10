@@ -4,12 +4,12 @@ Modificación del plugin "native" para exportar a SciELO.
 Dudas sobre el esquema SciELO:
 ==============================
 
-¿Sponsor (OJS) se refiere a lo mismo que Funding source (SciELO)? El nodo: journal-id journal-id-type="nlm-ta", ¿puede ser un entero? ¿A qué hace referencia el nodo <award-id>?
+¿Sponsor (OJS) se refiere a lo mismo que Funding source (SciELO)? El nodo: journal-id journal-id-type="nlm-ta", ¿puede ser un entero? ¿A qué hace referencia el nodo: award-id?
 
 Pendiende (en proceso):
 =======================
 
-Se intentó completar los nodos <publisher-name> (plugins/importexport/ojs2scielo/Ojs2scieloExportDom.inc.php: línea 261) mediante el método:
+Se intentó completar el nodo publisher-name (plugins/importexport/ojs2scielo/Ojs2scieloExportDom.inc.php: línea 261) mediante el método:
 
 	foreach ($article->getSuppFiles() as $suppFile) {
 			if (is_array($suppFile->getPublisher(null))) foreach ($suppFile->getPublisher(null) as $locale => $publisher) {
