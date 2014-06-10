@@ -144,7 +144,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		XMLCustomWriter::appendChild($articleMetaNode, $kwdGroupNode);
 		
 		// For each key word, the document must create a new node. There is also an optional "translation key word" group of
-		// nodes. This group is similar to the "kwd-group", with the exception that it contains the translation language
+		// group of nodes. This group is similar to the "kwd-group", with the exception that it contains the translation language initials
 		// as an attribute of the node.
 		
 		Ojs2ScieloExportDom::addFundingGroup($doc, $articleMetaNode); // Funding-group group.
