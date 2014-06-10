@@ -75,7 +75,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$frontNode =& XMLCustomWriter::createElement($doc, 'front'); // Front node.
 		XMLCustomWriter::appendChild($header, $frontNode);
 		
-		Ojs2ScieloExportDom::addJournalMeta($doc, $frontNode, $journal); // Attaches the Journal-meta group of nodes to the XML document.
+		Ojs2ScieloExportDom::addJournalMeta($doc, $frontNode, $journal, $article); // Attaches the Journal-meta group of nodes to the XML document.
 		
 		$articleMetaNode =& XMLCustomWriter::createElement($doc, 'article-meta'); // Article-meta node.
 		XMLCustomWriter::appendChild($frontNode, $articleMetaNode);
@@ -152,7 +152,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		// group of nodes. This group is similar to the "kwd-group", with the exception that it contains the translation language initials
 		// as an attribute of the node.
 		
-		Ojs2ScieloExportDom::addFundingGroup($doc, $articleMetaNode); // Attaches the Funding-group group of nodes to the XML document.
+		Ojs2ScieloExportDom::addFundingGroup($doc, $articleMetaNode, $article); // Attaches the Funding-group group of nodes to the XML document.
 		
 		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode); // Attaches the Counts group of nodes to the XML document.
 	}
@@ -234,7 +234,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * @$frontNode: XML front node (father node).
 	 * @$journal: selected journal (object).
 	 */
-	private function addJournalMeta(&$doc, &$frontNode, &$journal) {
+	private function addJournalMeta(&$doc, &$frontNode, &$journal, &$article) {
 		$journalMetaNode =& XMLCustomWriter::createElement($doc, 'journal-meta'); // Journal-meta node.
 		XMLCustomWriter::appendChild($frontNode, $journalMetaNode);
 
@@ -254,11 +254,20 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$issn = Ojs2ScieloExportDom::getISSN($journal);
 		$issnNode =& XMLCustomWriter::createChildWithText($doc, $journalMetaNode, 'issn', $issn, false); // ISSN node.
 		XMLCustomWriter::setAttribute($issnNode, 'pub-type', 'ppub');
-		
+
 		$publisherNode =& XMLCustomWriter::createElement($doc, 'publisher'); // Publisher node.
 		XMLCustomWriter::appendChild($journalMetaNode, $publisherNode);
 
-		$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'addpublisher-name', false); // Publisher-name node.
+		foreach ($article->getSuppFiles() as $suppFile) {
+			if (is_array($suppFile->getPublisher(null))) foreach ($suppFile->getPublisher(null) as $locale => $publisher) {
+				if($publisher !== '') {
+					$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', $publisher, false); // Publisher-name node.
+					unset($publisherNameNode);
+				} else {
+					$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'CESARaddpublisher-name', false); // Publisher-name node.
+				}
+			}
+		}
 	}
 	
 	/*
@@ -343,7 +352,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$articleMetaNode: XML front node (father node).
 	 */
-	private function addFundingGroup(&$doc, &$articleMetaNode) {
+	private function addFundingGroup(&$doc, &$articleMetaNode, $article) {
 		$fundingGroupNode =& XMLCustomWriter::createElement($doc, 'funding-group'); // Funding-group node.
 		XMLCustomWriter::appendChild($articleMetaNode, $fundingGroupNode);
 		
