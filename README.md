@@ -13,7 +13,7 @@ Se intentó completar el nodo publisher-name (plugins/importexport/ojs2scielo/Oj
 
 	foreach ($article->getSuppFiles() as $suppFile) {
 			if (is_array($suppFile->getPublisher(null))) foreach ($suppFile->getPublisher(null) as $locale => $publisher) {
-				if($publisher !== '') {
+				if($publisher !== '') { // El contenido de $publisher tampoco es NULL (ya se verificó)
 					$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', $publisher, false); // Publisher-name node.
 					unset($publisherNameNode);
 				} else {
