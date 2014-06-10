@@ -28,7 +28,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 	}
 	
 	/*
-	 * Display the command-line usage information.
+	 * Displays the command-line usage information.
 	 */
 	function usage($scriptName) {
 		echo __('plugins.importexport.ojs2scielo.cliUsage', array(
