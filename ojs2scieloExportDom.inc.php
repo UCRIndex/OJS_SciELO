@@ -30,7 +30,7 @@ class Ojs2ScieloExportDom extends ImportExportPlugin {
 	 * exportArticle creates the XML document, adds the front node to the document (with its children), adds the body
 	 * node to the document (with its children), adds the back node to the document (with its children) and finally
 	 * exports the XML.
-	 * This method receives five parameters that contain the corresponding journal, issue, section, and article chosen
+	 * This method gets five parameters that contain the corresponding journal, issue, section, and article chosen
 	 * by the user.
 	 * $journal refers to the journal that contains the selected article (object).
 	 * $issue refers to the journal issue (object).
