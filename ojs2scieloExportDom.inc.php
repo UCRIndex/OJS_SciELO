@@ -40,6 +40,9 @@ class Ojs2ScieloExportDom extends ImportExportPlugin {
 function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = null) {	
 		// For the creation of the document the function needs the DTD and its URL (root).
 		$doc =& XMLCustomWriter::createDocument('article', NATIVE_DTD_ID, NATIVE_DTD_URL);
+
+		// This is the url that the header should have in its attributes (Request::url(null, 'issue', 'view', $issue->getBestIssueId($journal))).
+		// However, there is a compilation error when this function is loaded from here. Stil unfixed.
 		
 		// Header node and its attributes (first node of the document).
 		$header =& XMLCustomWriter::createElement($doc, 'article');
@@ -158,8 +161,6 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	private function addBodyNode(&$article, &$doc, &$header, &$issue) {
 		$bodyNode =& XMLCustomWriter::createElement($doc, 'body'); // Body node.
 		XMLCustomWriter::appendChild($header, $bodyNode);
-
-		//$b =& XMLCustomWriter::createChildWithText($doc, $bodyNode, 'prueb',  $issue->getDatePublished(), false); // Title node.
 	}
 	
 	/*
