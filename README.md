@@ -7,7 +7,7 @@ Dudas sobre el esquema SciELO:
 - ¿Sponsor (OJS) se refiere a lo mismo que Funding source (SciELO)?
 - El nodo: journal-id journal-id-type="nlm-ta", ¿puede ser un entero?
 - ¿A qué hace referencia el grupo de nodos: award-group?
-- ¿La fecha del nodo: date date-type="received" equivale a la fecha: DateNotified?
+- ¿La fecha del nodo: date date-type="received" (SciELO) equivale a la fecha: DateNotified (OJS)?
 
 Pendiende (en proceso):
 =======================
