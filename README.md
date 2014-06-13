@@ -19,13 +19,13 @@ Pendientes:
 - named-content content-type="city" (*)
 - named-content content-type="state" (*)
 - addr-line (*)
-- kwd-group
 - email
 - fpage
 - lpage
-- history
 - permissions
+- kwd-group
 - funding-group
+- history
 - counts
 - body (contenido del artículo)
 - back (referencias)
