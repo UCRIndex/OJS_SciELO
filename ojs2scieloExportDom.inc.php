@@ -51,7 +51,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		XMLCustomWriter::appendChild($doc, $header);
 		
 		// Adds the front node to the document (with its children).
-		Ojs2ScieloExportDom::addFrontNode($journal, $article, $doc, $header);
+		Ojs2ScieloExportDom::addFrontNode($journal, $article, $doc, $header, $issue);
 		
 		// Adds the body node to the document (with its children).
 		Ojs2ScieloExportDom::addBodyNode($article, $doc, $header, $issue);
@@ -71,7 +71,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * @$doc contains the XML document created by the XMLCustomWriter class (XML document).
 	 * @$header contains the first node of the document (XML node).
 	 */
-	private function addFrontNode(&$journal, &$article, &$doc, &$header) {
+	private function addFrontNode(&$journal, &$article, &$doc, &$header, &$issue) {
 		$frontNode =& XMLCustomWriter::createElement($doc, 'front'); // Front node.
 		XMLCustomWriter::appendChild($header, $frontNode);
 		
@@ -119,15 +119,15 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		
 		Ojs2ScieloExportDom::addPubDate($doc, $articleMetaNode, $article); // Attaches the Pub-date group of nodes to the XML document.
 		
-		$volumeNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'volume', 'addvolume', false); // Volume node.
+		$volumeNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'volume', $issue->getVolume(), false); // Volume node.
 		
-		$issueNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'issue', 'addissue', false); // Issue node.
+		$issueNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'issue', $issue->getNumber(), false); // Issue node.
 		
 		$fPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'fpage', 'addfpage', false); // Fpage node.
 		
 		$lPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'lpage', 'addlpage', false); // Lpage node.
 		
-		Ojs2ScieloExportDom::addHistory($doc, $articleMetaNode); // Attaches the History group of nodes to the XML document.
+		Ojs2ScieloExportDom::addHistory($doc, $articleMetaNode, $issue); // Attaches the History group of nodes to the XML document.
 		
 		Ojs2ScieloExportDom::addPermissions($doc, $articleMetaNode); // Attaches the Permissions group of nodes to the XML document.
 
@@ -159,8 +159,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$bodyNode =& XMLCustomWriter::createElement($doc, 'body'); // Body node.
 		XMLCustomWriter::appendChild($header, $bodyNode);
 
-		//$journal =& Request::getJournal();
-		//$b =& XMLCustomWriter::createChildWithText($doc, $bodyNode, 'prueb',  $article->getPubId('doi'), false); // Title node.
+		//$b =& XMLCustomWriter::createChildWithText($doc, $bodyNode, 'prueb',  $issue->getDatePublished(), false); // Title node.
 	}
 	
 	/*
@@ -299,7 +298,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * @$doc: XML document created by XMLCustomWriter.
 	 * @$articleMetaNode: XML node (father node).
 	 */
-	private function addHistory(&$doc, &$articleMetaNode) {
+	private function addHistory(&$doc, &$articleMetaNode, &$issue) {
 		$historyNode =& XMLCustomWriter::createElement($doc, 'history'); // History node.
 		XMLCustomWriter::appendChild($articleMetaNode, $historyNode);
 		
