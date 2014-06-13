@@ -9,25 +9,20 @@ Dudas sobre el esquema SciELO:
 - ¿A qué hace referencia el grupo de nodos: award-group?
 - ¿La fecha del nodo: date date-type="received" (SciELO) equivale a la fecha: DateNotified (OJS)?
 
-Pendiende (en proceso):
-=======================
+Campos pendientes (excluyendo los nodos body y back):
+====================================================
 
-Se intentó completar el nodo publisher-name (plugins/importexport/ojs2scielo/Ojs2scieloExportDom.inc.php: línea 261) mediante el método:
-
-	foreach ($article->getSuppFiles() as $suppFile) {
-			if (is_array($suppFile->getPublisher(null))) foreach ($suppFile->getPublisher(null) as $locale => $publisher) {
-				if($publisher !== '') { // El contenido de $publisher tampoco es NULL (ya se verificó)
-					$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', $publisher, false); // Publisher-name node.
-					unset($publisherNameNode);
-				} else {
-					$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'addpublisher-name', false); // Publisher-name node.
-				}
-			}
-		}
-
-Pero el nodo desaparece por completo indicando un error, esto ocurre debido a que todavía no se conoce el valor que contiene la variable $publisher luego de su asignación.
-
-Respuesta al problema anterior:
-===============================
-
-No se puede utilizar la función "getSuppFiles". Todavía no de ha determinado la razón.
+- article-type (encabezado)
+- article-id pub-id-type="doi" (article-meta)
+- subject (subj-group subj-group-type="heading")
+- named-content content-type="zipcode" (institution content-type="orgname")
+- named-content content-type="city" (institution content-type="orgname")
+- named-content content-type="state" (institution content-type="orgname")
+- addr-line (institution content-type="orgname")
+- email (author-notes)
+- fpage (author-notes)
+- lpage (author-notes)
+- history
+- permissions
+- funding-group
+- counts
