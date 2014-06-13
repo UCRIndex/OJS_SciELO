@@ -18,7 +18,7 @@ Pendientes:
 - named-content content-type="zipcode" (*)
 - named-content content-type="city" (*)
 - named-content content-type="state" (*)
-- addr-line
+- addr-line (*)
 - email
 - fpage
 - lpage
