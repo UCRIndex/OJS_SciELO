@@ -12,19 +12,21 @@ Dudas sobre el esquema SciELO:
 Pendientes:
 ===========
 
-- article-type (encabezado)
-- article-id pub-id-type="doi" (article-meta)
-- subject (subj-group subj-group-type="heading")
-- named-content content-type="zipcode" (institution content-type="orgname")
-- named-content content-type="city" (institution content-type="orgname")
-- named-content content-type="state" (institution content-type="orgname")
-- addr-line (institution content-type="orgname")
-- email (author-notes)
-- fpage (author-notes)
-- lpage (author-notes)
+- article-type
+- article-id pub-id-type="doi"
+- subject
+- named-content content-type="zipcode" (*)
+- named-content content-type="city" (*)
+- named-content content-type="state" (*)
+- addr-line
+- email
+- fpage
+- lpage
 - history
 - permissions
 - funding-group
 - counts
 - body (contenido del artículo)
 - back (referencias)
+
+(*) No se encontraron en ningún objeto (deben ser solicitados al usuario en una futura versión).
