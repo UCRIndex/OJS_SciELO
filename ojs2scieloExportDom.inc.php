@@ -54,7 +54,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		Ojs2ScieloExportDom::addFrontNode($journal, $article, $doc, $header);
 		
 		// Adds the body node to the document (with its children).
-		Ojs2ScieloExportDom::addBodyNode($article, $doc, $header);
+		Ojs2ScieloExportDom::addBodyNode($article, $doc, $header, $issue);
 		
 		// Adds the back node to the document (with its children).
 		Ojs2ScieloExportDom::addBackNode($article, $doc, $header);
@@ -155,9 +155,12 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * Here, the nodes are tied to the content of the document, so there must be a strategy to extract the body from the document and
 	 * transform these sections into nodes (paragraphs, titles, tables, etc.).
 	 */
-	private function addBodyNode(&$article, &$doc, &$header) {
+	private function addBodyNode(&$article, &$doc, &$header, &$issue) {
 		$bodyNode =& XMLCustomWriter::createElement($doc, 'body'); // Body node.
 		XMLCustomWriter::appendChild($header, $bodyNode);
+
+		//$journal =& Request::getJournal();
+		//$b =& XMLCustomWriter::createChildWithText($doc, $bodyNode, 'prueb',  $article->getPubId('doi'), false); // Title node.
 	}
 	
 	/*
@@ -269,7 +272,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$publisherNode =& XMLCustomWriter::createElement($doc, 'publisher'); // Publisher node.
 		XMLCustomWriter::appendChild($journalMetaNode, $publisherNode);
 
-		$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'addpublisher-name', false); // Publisher-name node.
+		$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', $journal->getSetting('publisherInstitution'), false); // Publisher-name node.
 	}
 	
 	/*
