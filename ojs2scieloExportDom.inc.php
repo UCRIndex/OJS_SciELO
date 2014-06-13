@@ -269,16 +269,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$publisherNode =& XMLCustomWriter::createElement($doc, 'publisher'); // Publisher node.
 		XMLCustomWriter::appendChild($journalMetaNode, $publisherNode);
 
-		foreach ($article->getSuppFiles() as $suppFile) {
-			if (is_array($suppFile->getPublisher(null))) foreach ($suppFile->getPublisher(null) as $locale => $publisher) {
-				if($publisher !== '') {
-					$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', $publisher, false); // Publisher-name node.
-					unset($publisherNameNode);
-				} else {
-					$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'CESARaddpublisher-name', false); // Publisher-name node.
-				}
-			}
-		}
+		$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', 'addpublisher-name', false); // Publisher-name node.
 	}
 	
 	/*
