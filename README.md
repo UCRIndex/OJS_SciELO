@@ -19,6 +19,7 @@ Pendientes:
 - named-content content-type="city" (*)
 - named-content content-type="state" (*)
 - addr-line (*)
+- kwd-group
 - email
 - fpage
 - lpage
