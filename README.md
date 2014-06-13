@@ -9,8 +9,8 @@ Dudas sobre el esquema SciELO:
 - ¿A qué hace referencia el grupo de nodos: award-group?
 - ¿La fecha del nodo: date date-type="received" (SciELO) equivale a la fecha: DateNotified (OJS)?
 
-Campos pendientes (excluyendo los nodos body y back):
-====================================================
+Pendientes (excluyendo los nodos body y back):
+==============================================
 
 - article-type (encabezado)
 - article-id pub-id-type="doi" (article-meta)
