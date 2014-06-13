@@ -23,3 +23,8 @@ Se intentó completar el nodo publisher-name (plugins/importexport/ojs2scielo/Oj
 		}
 
 Pero el nodo desaparece por completo indicando un error, esto ocurre debido a que todavía no se conoce el valor que contiene la variable $publisher luego de su asignación.
+
+Respuesta al problema anterior:
+===============================
+
+No se puede utilizar la función "getSuppFiles". Todavía no de ha determinado la razón.
