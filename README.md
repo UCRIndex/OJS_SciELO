@@ -12,7 +12,7 @@ Dudas sobre el esquema SciELO:
 Pendientes:
 ===========
 
-- article-type
+- header: url, mml, type
 - article-id pub-id-type="doi"
 - subject
 - named-content content-type="zipcode" (*)
