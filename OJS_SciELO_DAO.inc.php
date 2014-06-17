@@ -1,6 +1,6 @@
 // In progress
 
-<?php
+<?<?php
 /*
  * The intention with this class is to encapsulate the necesary data for this plugin in a DAO object. This DAO will contain extra information about
  * publications. For instance: the body, citations and count of images among othrers.
@@ -93,6 +93,10 @@ class OJS_SciELO_DAO extends DAO {
 	 	);
 	}
 
+	/*
+	 * Retrieves the article body from de database from an article identifier.
+	 * @$articleId: article identifier ($article->getArticleId()).
+	 */
 	function getArticleBody($articleId) {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$result = &$this->retrieve('SELECT setting_value FROM article_settings WHERE 
@@ -105,8 +109,13 @@ class OJS_SciELO_DAO extends DAO {
 	// ==================== </BODY> ==================== \\
 
 	// ==================== <IMAGES> ==================== \\
+	/*
+	 * Stores an image as a string in the database (assumes that the attribute does not exist into the database). This function is usefull for the
+	 * 'count node' of the SciELO schema.
+	 * @$article: object that contains an article.
+	 * @$images: string.
+	 */
 	function insertArticleImages(&$article, $images) {
-
 		$primaryLocale = Locale::getPrimaryLocale();
 		$this->update(
 			sprintf('INSERT INTO article_settings
