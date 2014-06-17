@@ -31,6 +31,13 @@ class OJS_SciELO_DAO extends DAO {
 	}
 
 	// ==================== <BODY> ==================== \\
+
+	/*
+	 * Checks if the database already contains the article body as an attribute. If so, this function updates the text. Otherwise, it includes the new
+	 * setting to the database.
+	 * @$article: object.
+	 * @$body: string that contains the article body.
+	 */
 	function setArticleBody(&$article, $body){
 		if(!$this->settingExists($article->getArticleId(), "body"))
 			$this->insertArticleBody($article, $body);
@@ -38,6 +45,7 @@ class OJS_SciELO_DAO extends DAO {
 			$this->updateArticleBody($article, $body);
 	}
 	
+
 	function insertArticleBody(&$article, $body) {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$this->update(
