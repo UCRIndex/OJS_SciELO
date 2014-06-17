@@ -13,7 +13,7 @@ class OJS_SciELO_DAO extends DAO {
 
 	/*
 	 * This function checks if a determinate setting (attribute) is already part of the corresponding table.
-	 * @$articleId: article identifier ($article -> getID()).
+	 * @$articleId: article identifier ($article->getArticleId()).
 	 * @$setting_name: setting to be checked into the database.
 	 * @$locale: localization of the article.
 	 */
@@ -35,7 +35,7 @@ class OJS_SciELO_DAO extends DAO {
 	/*
 	 * Checks if the database already contains the article body as an attribute. If so, this function updates the text. Otherwise, it includes the new
 	 * setting to the database.
-	 * @$article: object.
+	 * @$article: object that contains an article.
 	 * @$body: string that contains the article body.
 	 */
 	function setArticleBody(&$article, $body){
@@ -46,6 +46,11 @@ class OJS_SciELO_DAO extends DAO {
 	}
 	
 
+	/*
+	 * Inserts the article body into the database (assumes that the attribute does not exist into the database).
+	 * @$article: object that contains an article.
+	 * @$body: string that contains the article body. 
+	 */
 	function insertArticleBody(&$article, $body) {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$this->update(
@@ -68,6 +73,11 @@ class OJS_SciELO_DAO extends DAO {
 	 	);
 	}
 	
+	/*
+	 * Updates the article body into the database (assumes that the attribute already exists into the database).
+	 * @$article: object that contains an article.
+	 * @$body: string that contains the article body. 
+	 */
 	function updateArticleBody(&$article, $body) {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$this->update(
