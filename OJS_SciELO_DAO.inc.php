@@ -1,3 +1,5 @@
+// In progress
+
 <?php
 
 class OJS_SciELO_DAO extends DAO {
