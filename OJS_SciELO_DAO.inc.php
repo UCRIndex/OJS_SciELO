@@ -31,6 +31,7 @@ class OJS_SciELO_DAO extends DAO {
 		} else return false;
 	}
 
+	// ==================== <BODY> ==================== \\
 	function setArticleBody(&$article, $body){
 		if(!$this->settingExists($article->getArticleId(), "body"))
 			$this->insertArticleBody($article, $body);
@@ -38,7 +39,6 @@ class OJS_SciELO_DAO extends DAO {
 			$this->updateArticleBody($article, $body);
 	}
 	
-	// ================= <BODY> ================= \\
 	function insertArticleBody(&$article, $body) {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$this->update(
@@ -78,16 +78,38 @@ class OJS_SciELO_DAO extends DAO {
 
 	function getArticleBody($articleId) {
 		$primaryLocale = Locale::getPrimaryLocale();
-
 		$result = &$this->retrieve('SELECT setting_value FROM article_settings WHERE 
 									setting_name=\'body\' AND 
 									article_id = ? AND 
 									locale = ? ', 
 									array($articleId, $primaryLocale));
-		
 		return $result->fields['setting_value'];
 	}
-	// ================= </BODY> ================= \\
+	// ==================== </BODY> ==================== \\
+
+	// ==================== <IMAGES> ==================== \\
+	function insertArticleImages(&$article, $images) {
+
+		$primaryLocale = Locale::getPrimaryLocale();
+		$this->update(
+			sprintf('INSERT INTO article_settings
+				(
+					article_id,
+					locale,
+					setting_name,
+					setting_value,
+					setting_type
+				)
+				VALUES 
+				(%s, \'%s\', \'%s\', \'%s\', \'%s\')',
+				$article->getArticleId(),
+				$primaryLocale,
+				"images",
+				$images,
+				"string"
+			)
+	 	);
+	}
 
 	function insertArticleImages(&$article, $images) {
 
@@ -111,6 +133,7 @@ class OJS_SciELO_DAO extends DAO {
 			)
 	 	);
 	}
+	// ================= </IMAGES> ================= \\
 
 }
 
