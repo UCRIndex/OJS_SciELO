@@ -1,6 +1,6 @@
 // In progress
 
-<?php
+<?<?php
 /*
  * The intention with this class is to encapsulate the necesary data for this plugin in a DAO object. This DAO will contain extra information about
  * publications. For instance: the body, citations and count of images among othrers.
@@ -30,8 +30,10 @@ class OJS_SciELO_DAO extends DAO {
 		} else return false;
 	}
 
+	///// BODY
+
 	/*
-	 * Checks if the database already contains the article body as an attribute. If so, this function updates the text. Otherwise, it includes the new
+	 * Checks if the database already contains the article body as an attribute. If so, this function updates the field. Otherwise, it includes the new
 	 * setting to the database.
 	 * @$article: object that contains an article.
 	 * @$body: string that contains the article body.
@@ -41,7 +43,6 @@ class OJS_SciELO_DAO extends DAO {
 		else $this->updateArticleBody($article, $body);
 	}
 	
-
 	/*
 	 * Inserts the article body into the database (assumes that the attribute does not exist into the database).
 	 * @$article: object that contains an article.
@@ -103,13 +104,23 @@ class OJS_SciELO_DAO extends DAO {
 		return $result->fields['setting_value'];
 	}
 
-	/////////////////////////////////////////////////////////////////////// IMAGES
+	///// IMAGES
 
 	/*
-	 * Stores an image as a string in the database (assumes that the attribute does not exist into the database). This function is usefull for the
-	 * 'count node' of the SciELO schema.
+	 * Checks if the database already contains 'images' as an attribute. If so, this function updates the field. Otherwise, it includes the new
+	 * setting to the database.
 	 * @$article: object that contains an article.
-	 * @$images: string.
+	 * @$images: string that contains the description of the images.
+	 */
+	function setArticleImages(&$article, $images) {
+		if(!$this->settingExists($article->getArticleId(), "images")) $this->insertArticleImages($article, $images);
+		else $this->updateArticleImages($article, $images);
+	}
+
+	/*
+	 * Inserts the article 'images' into the database (assumes that the attribute does not exist into the database).
+	 * @$article: object that contains the selected article.
+	 * @$images: string related to the image be store.
 	 */
 	function insertArticleImages(&$article, $images) {
 		$primaryLocale = Locale::getPrimaryLocale();
@@ -134,14 +145,23 @@ class OJS_SciELO_DAO extends DAO {
 	}
 
 	/*
-	 * Checks if the database already contains the 'images' as an attribute. If so, this function updates the field. Otherwise, it includes the new
-	 * setting to the database.
+	 * Updates the article images into the database (assumes that the attribute already exists into the database).
 	 * @$article: object that contains an article.
-	 * @$images: string that contains the description of the images.
+	 * @$body: string that contains the description of the images.
 	 */
-	function setArticleImages(&$article, $images) {
-		if(!$this->settingExists($article->getArticleId(), "images")) $this->insertArticleImages($article, $images);
-		else $this->updateArticleImages($article, $images);
+	function updateArticleImages(&$article, $images) {
+		$primaryLocale = Locale::getPrimaryLocale();
+		$this->update(
+			sprintf('UPDATE article_settings SET 
+					setting_value = \'%s\' 
+					WHERE article_id = %s AND 
+					setting_name=\'images\' AND 
+					locale=\'%s\'', 
+					$images, 
+					$article->getArticleId(), 
+					$primaryLocale
+				)
+	 	);
 	}
 
 	/*
@@ -160,24 +180,81 @@ class OJS_SciELO_DAO extends DAO {
 		return $result->RecordCount();
 	}
 
+	///// CITATIONS
+
 	/*
-	 * Updates the article images into the database (assumes that the attribute already exists into the database).
-	 * @$article: object that contains an article.
-	 * @$body: string that contains the description of the images.
+	 * Checks if the database already contains 'citations' as an attribute. If so, this function updates the field. Otherwise, it includes the new
+	 * setting to the database.
+	 * @$articleId: article identifier ($article->getArticleId()).
+	 * @$citations: string that contains the citation.
 	 */
-	function updateArticleImages(&$article, $images) {
+	function setArticleCitations($articleId, $citations) {
+		if(!$this->settingExists($articleId, "citations")) $this->insertArticleCitations($articleId, $citations);
+		else $this->updateArticleCitations($articleId, $citations);
+	}	 
+	
+	/*
+	 * Inserts the article citations into the database (assumes that the attribute does not exist into the database).
+	 * @$article: object that contains the selected article.
+	 * @$citations: string related to the imagebe stored.
+	 */
+	function insertArticleCitations($articleId, $citations) {
 		$primaryLocale = Locale::getPrimaryLocale();
+		$serialCitations = serialize($citations);
+		$this->update(
+			sprintf('INSERT INTO article_settings
+				(
+					article_id,
+					locale,
+					setting_name,
+					setting_value,
+					setting_type
+				)
+				VALUES 
+				(%s, \'%s\', \'%s\', \'%s\', \'%s\')',
+				$articleId,
+				$primaryLocale,
+				"citations",
+				$serialCitations,
+				"string"
+			)
+	 	);
+	}
+	
+	/*
+	 * Updates the article citations into the database (assumes that the attribute already exists into the database).
+	 * @$article: object that contains an article.
+	 * @$body: string that contains the citations.
+	 */
+	 function updateArticleCitations($articleId, $citations) {
+		$primaryLocale = Locale::getPrimaryLocale();
+		$serialCitations = serialize($citations);
 		$this->update(
 			sprintf('UPDATE article_settings SET 
-					setting_value = \'%s\' 
-					WHERE article_id = %s AND 
-					setting_name=\'images\' AND 
-					locale=\'%s\'', 
-					$images, 
-					$article->getArticleId(), 
-					$primaryLocale
-				)
+					 setting_value = \'%s\' WHERE 
+					 article_id = %s AND 
+					 setting_name=\'citations\' AND 
+					 locale=\'%s\'', 
+					 $serialCitations, 
+					 $articleId, 
+					 $primaryLocale
+					)
 	 	);
+	}
+	
+	/*
+	 * Retrieves a string with the citations for a specific author.
+	 * @$articleId: article identifier ($article->getArticleId()).
+	 */
+	function getCitationsByArticleId($articleId) {
+		$primaryLocale = Locale::getPrimaryLocale();
+		$result = &$this->retrieve('SELECT setting_value FROM article_settings WHERE 
+									setting_name=? AND 
+									article_id = ? AND 
+									locale = ?', 
+									array("citations", $articleId, $primaryLocale)
+									);
+		return $result->fields['setting_value'];	
 	}
 }
 
