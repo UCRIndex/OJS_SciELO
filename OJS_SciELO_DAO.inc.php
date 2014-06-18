@@ -149,7 +149,7 @@ class OJS_SciELO_DAO extends DAO {
 	 * previously.
 	 * @$articleId: article identifier ($article->getArticleId()).
 	 */
-	function countImagesByArticleId($articleId){
+	function countImagesByArticleId($articleId) {
 		$locale = Locale::getPrimaryLocale();
 		$result = &$this->retrieve('SELECT setting_value FROM article_settings WHERE 
 									setting_name = ? AND 
@@ -158,6 +158,26 @@ class OJS_SciELO_DAO extends DAO {
 									array("images", $articleId, $locale)
 								   );
 		return $result->RecordCount();
+	}
+
+	/*
+	 * Updates the article images into the database (assumes that the attribute already exists into the database).
+	 * @$article: object that contains an article.
+	 * @$body: string that contains the description of the images.
+	 */
+	function updateArticleImages(&$article, $images) {
+		$primaryLocale = Locale::getPrimaryLocale();
+		$this->update(
+			sprintf('UPDATE article_settings SET 
+					setting_value = \'%s\' 
+					WHERE article_id = %s AND 
+					setting_name=\'images\' AND 
+					locale=\'%s\'', 
+					$images, 
+					$article->getArticleId(), 
+					$primaryLocale
+				)
+	 	);
 	}
 }
 
