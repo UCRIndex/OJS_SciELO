@@ -17,7 +17,7 @@ class OJS_SciELO_DAO extends DAO {
 	 * @$setting_name: setting to be checked into the database.
 	 * @$locale: localization of the article.
 	 */
-	function settingExists($articleId, $settingName, $locale = null){
+	function settingExists($articleId, $settingName, $locale = null) {
 		if($locale == null) $locale = Locale::getPrimaryLocale();
 		$result = &$this->retrieve('SELECT setting_value FROM article_settings WHERE 
 									setting_name = ? AND 
@@ -30,19 +30,15 @@ class OJS_SciELO_DAO extends DAO {
 		} else return false;
 	}
 
-	// ==================== <BODY> ==================== \\
-
 	/*
 	 * Checks if the database already contains the article body as an attribute. If so, this function updates the text. Otherwise, it includes the new
 	 * setting to the database.
 	 * @$article: object that contains an article.
 	 * @$body: string that contains the article body.
 	 */
-	function setArticleBody(&$article, $body){
-		if(!$this->settingExists($article->getArticleId(), "body"))
-			$this->insertArticleBody($article, $body);
-		else
-			$this->updateArticleBody($article, $body);
+	function setArticleBody(&$article, $body) {
+		if(!$this->settingExists($article->getArticleId(), "body"))	$this->insertArticleBody($article, $body);
+		else $this->updateArticleBody($article, $body);
 	}
 	
 
@@ -106,9 +102,9 @@ class OJS_SciELO_DAO extends DAO {
 									array($articleId, $primaryLocale));
 		return $result->fields['setting_value'];
 	}
-	// ==================== </BODY> ==================== \\
 
-	// ==================== <IMAGES> ==================== \\
+	/////////////////////////////////////////////////////////////////////// IMAGES
+
 	/*
 	 * Stores an image as a string in the database (assumes that the attribute does not exist into the database). This function is usefull for the
 	 * 'count node' of the SciELO schema.
@@ -138,6 +134,17 @@ class OJS_SciELO_DAO extends DAO {
 	}
 
 	/*
+	 * Checks if the database already contains the 'images' as an attribute. If so, this function updates the field. Otherwise, it includes the new
+	 * setting to the database.
+	 * @$article: object that contains an article.
+	 * @$images: string that contains the description of the images.
+	 */
+	function setArticleImages(&$article, $images) {
+		if(!$this->settingExists($article->getArticleId(), "images")) $this->insertArticleImages($article, $images);
+		else $this->updateArticleImages($article, $images);
+	}
+
+	/*
 	 * Counts the number of images that contains an article. In order to obtain an acurate result, the function 'insertArticleImages' must be called
 	 * previously.
 	 * @$articleId: article identifier ($article->getArticleId()).
@@ -152,7 +159,6 @@ class OJS_SciELO_DAO extends DAO {
 								   );
 		return $result->RecordCount();
 	}
-	// ================= </IMAGES> ================= \\
 }
 
 ?>
