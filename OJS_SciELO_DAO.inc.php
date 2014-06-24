@@ -1,6 +1,6 @@
 // In progress
 
-<?<?php
+<?php
 /*
  * The intention with this class is to encapsulate the necesary data for this plugin in a DAO object. This DAO will contain extra information about
  * publications. For instance: the body, citations and count of images among othrers.
@@ -81,8 +81,8 @@ class OJS_SciELO_DAO extends DAO {
 			sprintf('UPDATE article_settings SET 
 					setting_value = \'%s\' 
 					WHERE article_id = %s AND 
-					setting_name=\'body\' AND 
-					locale=\'%s\'', 
+					setting_name = \'body\' AND 
+					locale = \'%s\'', 
 					$body, 
 					$article->getArticleId(), 
 					$primaryLocale
@@ -97,7 +97,7 @@ class OJS_SciELO_DAO extends DAO {
 	function getArticleBody($articleId) {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$result = &$this->retrieve('SELECT setting_value FROM article_settings WHERE 
-									setting_name=\'body\' AND 
+									setting_name = \'body\' AND 
 									article_id = ? AND 
 									locale = ? ', 
 									array($articleId, $primaryLocale));
@@ -155,8 +155,8 @@ class OJS_SciELO_DAO extends DAO {
 			sprintf('UPDATE article_settings SET 
 					setting_value = \'%s\' 
 					WHERE article_id = %s AND 
-					setting_name=\'images\' AND 
-					locale=\'%s\'', 
+					setting_name = \'images\' AND 
+					locale = \'%s\'', 
 					$images, 
 					$article->getArticleId(), 
 					$primaryLocale
@@ -233,8 +233,8 @@ class OJS_SciELO_DAO extends DAO {
 			sprintf('UPDATE article_settings SET 
 					 setting_value = \'%s\' WHERE 
 					 article_id = %s AND 
-					 setting_name=\'citations\' AND 
-					 locale=\'%s\'', 
+					 setting_name = \'citations\' AND 
+					 locale = \'%s\'', 
 					 $serialCitations, 
 					 $articleId, 
 					 $primaryLocale
@@ -249,12 +249,183 @@ class OJS_SciELO_DAO extends DAO {
 	function getCitationsByArticleId($articleId) {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$result = &$this->retrieve('SELECT setting_value FROM article_settings WHERE 
-									setting_name=? AND 
+									setting_name = ? AND 
 									article_id = ? AND 
 									locale = ?', 
 									array("citations", $articleId, $primaryLocale)
 									);
 		return $result->fields['setting_value'];	
+	}
+
+
+	///// METADATA
+
+	/*
+	 * Returns an specific metadata from the settings table.
+	 */
+	function getMetadataByArticleId($articleId, $metadata){
+		$primaryLocale = Locale::getPrimaryLocale();
+		$result = &$this->retrieve('SELECT setting_value FROM article_settings WHERE 
+									setting_name = ? AND 
+									article_id = ? AND 
+									locale = ?', 
+									array($metadata, $articleId, $primaryLocale)
+									);
+		return $result->fields['setting_value'];	
+	}
+	
+	/**
+	 * Sets an specific metadata setting.
+	 */
+	function setArticleMetadata($articleId, $metadata, $value)	{
+		if(!$this->settingExists($articleId, $metadata))
+			$this->insertMetadataByArticleId($articleId, $metadata, $value);
+		else
+			$this->updateMetadataByArticleId($articleId, $metadata, $value);
+	}	
+	
+	/**
+	 * Inserts an specific metadata for a given article.
+	 */
+	function insertMetadataByArticleId($articleId, $metadata, $value) {
+		$primaryLocale = Locale::getPrimaryLocale();
+		$this->update(
+			sprintf('INSERT INTO article_settings
+				(
+					article_id,
+					locale,
+					setting_name,
+					setting_value,
+					setting_type
+				)
+				VALUES 
+				(%s, \'%s\', \'%s\', \'%s\', \'%s\')',
+				$articleId,
+				$primaryLocale,
+				$metadata,
+				$value,
+				"string"
+			)
+	 	);
+	}
+	
+	/**
+	 * updates an specific metadata on the settings table.
+	 */
+	 function updateMetadataByArticleId($articleId, $metadata, $value) {
+		$primaryLocale = Locale::getPrimaryLocale();
+		$this->update(
+			sprintf('UPDATE article_settings SET 
+					 setting_value = \'%s\' WHERE 
+					 article_id = %s AND 
+					 setting_name=\'%s\' AND 
+					 locale=\'%s\'', 
+					 $value, 
+					 $articleId, 
+					 $metadata,
+					 $primaryLocale
+					)
+	 	);
+	}
+
+	/**
+	 * Return author email by ID
+	 */
+	function getAuthorEmailByAuthorId($authorId){
+		$primaryLocale = Locale::getPrimaryLocale();
+		
+		$result = &$this->retrieve('SELECT email FROM authors WHERE 
+									author_id = ? ', 
+									array($authorId, $primaryLocale)
+									);
+		
+		return $result->fields['email'];
+	}
+	
+	/**
+	 * Returns an specific metadata from the authors settings table.
+	 */
+	function getAuthorMetadataByAuthorId($authorId, $metadata){
+		$primaryLocale = Locale::getPrimaryLocale();
+		
+		$result = &$this->retrieve('SELECT setting_value FROM author_settings WHERE 
+									setting_name=? AND 
+									author_id = ? AND 
+									locale = ?', 
+									array($metadata, $authorId, $primaryLocale)
+									);
+		
+		return $result->fields['setting_value'];	
+	}
+	
+	/**
+	 * Sets an specific metadata for authors setting.
+	 */
+	function setAuthorMetadata($authorId, $metadata, $value)	{
+		if(!$this->authorSettingExists($authorId, $metadata))
+			$this->insertAuthorMetadataByAuthorId($authorId, $metadata, $value);
+		else
+			$this->updateAuthorMetadataByAuthorId($authorId, $metadata, $value);
+	}	
+	
+	/**
+	 * Inserts an specific metadata for a given article.
+	 */
+	function insertAuthorMetadataByAuthorId($authorId, $metadata, $value) {
+		//var_dump($authorId);
+		//die();
+		$primaryLocale = Locale::getPrimaryLocale();
+		$this->update(
+			sprintf('INSERT INTO author_settings
+				(
+					author_id,
+					locale,
+					setting_name,
+					setting_value,
+					setting_type
+				)
+				VALUES 
+				(%s, \'%s\', \'%s\', \'%s\', \'%s\')',
+				$authorId,
+				$primaryLocale,
+				$metadata,
+				$value,
+				"string"
+			)
+	 	);
+	}
+	
+	/**
+	 * updates an specific metadata on the settings table.
+	 */
+	 function updateAuthorMetadataByAuthorId($authorId, $metadata, $value) {
+		$primaryLocale = Locale::getPrimaryLocale();
+		$this->update(
+			sprintf('UPDATE author_settings SET 
+					 setting_value = \'%s\' WHERE 
+					 author_id = %s AND 
+					 setting_name=\'%s\' AND 
+					 locale=\'%s\'', 
+					 $value, 
+					 $authorId, 
+					 $metadata,
+					 $primaryLocale
+					)
+	 	);
+	}
+
+	/**
+	 * updates the article citations of the article database fields.
+	 */
+	function updateOjsArticleCitations($articleId, $citations){
+		$this->update(
+			sprintf('UPDATE articles SET 
+					 citations = \'%s\' WHERE 
+					 article_id = %s', 
+					 $citations, 
+					 $articleId
+					)
+	 	);
 	}
 }
 
