@@ -1,4 +1,4 @@
-<?php
+<?<?php
 
 /**
  * @file plugins/importexport/ojs2scielo/Ojs2scieloImportExportPlugin.inc.php
@@ -24,6 +24,33 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 	function register($category, $path) {
 		$success = parent::register($category, $path);
 		$this->addLocaleData();
+		if ($success && $this->getEnabled()) {
+
+			// STILL NOT IMPLEMENTED
+            /*
+            // IMPORT DAO HERE
+            $this->import('classes.ArticlesExtrasDAO');
+            // PHP4 Requires explicit instantiation-by-reference
+            if (checkPhpVersion('5.0.0')) {
+                $articlesExtrasDao = new ArticlesExtrasDAO();
+            } else {
+                $articlesExtrasDao = & new ArticlesExtrasDAO();
+            }
+
+            DAORegistry::registerDAO('ArticlesExtrasDAO', $articlesExtrasDao);
+			*/
+
+            // Handler for public pages.
+            HookRegistry::register('LoadHandler', array($this, 'setupPublicHandler'));
+
+            // NOT IMPLEMENTED YET
+            // Enable TinyMCE for body text area
+            //HookRegistry::register('TinyMCEPlugin::getEnableFields', array($this, 'enableTinyMCE'));
+
+            // NOT IMPLEMENTED YET
+            // Editor page for editor access
+            //HookRegistry::register('Templates::Editor::Index::AdditionalItems', array($this, 'displayEditorHomeLink'));
+        }
 		return $success;
 	}
 	
@@ -119,7 +146,33 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 				$this->setBreadcrumbs();
 				$templateMgr->display($this->getTemplatePath() . 'index.tpl');
 		}
-	}	
+	}
+
+    /*
+     * Setup public handler. This handler is used for the implementation of the menu in the plugin.
+     */
+    function setupPublicHandler($hookName, $params) {
+        $page = &$params[0];
+        if ($page == 'ojs2scieloImportExportPlugin') {
+            define('OJS_2_SCIELO_IMPORT_EXPORT_PLUGIN_NAME', $this->getName());
+            define('HANDLER_CLASS', 'OJS2SciELOHandler');
+            Locale::requireComponents(array(LOCALE_COMPONENT_APPLICATION_COMMON, LOCALE_COMPONENT_PKP_USER, LOCALE_COMPONENT_OJS_EDITOR)); // Registration of constants
+            $handlerFile = &$params[2];
+            $handlerFile = $this->getPluginPath() . '/' . 'OJS2SciELOHandler.inc.php'; // Handler's path.
+        }
+    }
+
+    /*
+     * Enable TinyMCE support for body text area.
+    function enableTinyMCE($hookName, $params) {
+        $fields = & $params[1];
+        $page = Request::getRequestedPage();
+        $op = Request::getRequestedOp();
+        $pageName = defined("OJS_2_SCIELO_IMPORT_EXPORT_PLUGIN_NAME") ? OJS_2_SCIELO_IMPORT_EXPORT_PLUGIN_NAME : null;
+        if (strtolower($page) == $pageName && ($op == 'submitBody' || $op == 'saveBody')) $fields[] = 'articleBody';
+        return false;
+    }
+	*/
 }
 
 ?>
