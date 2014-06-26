@@ -158,7 +158,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
             define('HANDLER_CLASS', 'OJS2SciELOHandler');
             Locale::requireComponents(array(LOCALE_COMPONENT_APPLICATION_COMMON, LOCALE_COMPONENT_PKP_USER, LOCALE_COMPONENT_OJS_EDITOR)); // Registration of constants
             $handlerFile = &$params[2];
-            $handlerFile = $this->getPluginPath() . '/' . 'OJS2SciELOHandler.inc.php'; // Handler's path.
+            $handlerFile = $this->getPluginPath() . '/' . 'OJS2SciELOHandler.inc.php'; // Handler's path (file).
         }
     }
 
