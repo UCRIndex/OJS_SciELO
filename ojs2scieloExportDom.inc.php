@@ -161,6 +161,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	private function addBodyNode(&$article, &$doc, &$header, &$issue) {
 		$bodyNode =& XMLCustomWriter::createElement($doc, 'body'); // Body node.
 		XMLCustomWriter::appendChild($header, $bodyNode);
+		$articlesExtrasDao =& new ArticlesExtrasDAO();
+		$body = $articlesExtrasDao->getArticleBody($article->getArticleId());
+		$textNode =& XMLCustomWriter::createChildWithText($doc, $bodyNode, 'body', $body, false);
+		//$zip = $articlesExtrasDao->getMetadataByArticleId($article->getArticleId(), 'aff_zipcode');
+		//$textNode =& XMLCustomWriter::createChildWithText($doc, $bodyNode, 'zip', '$zip', false);
 	}
 	
 	/*
