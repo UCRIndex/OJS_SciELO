@@ -39,12 +39,12 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 		
 		*/
 
-            // Handler for public pages.
-            HookRegistry::register('LoadHandler', array($this, 'setupPublicHandler'));
+        // Handler for public pages.
+        HookRegistry::register('LoadHandler', array($this, 'setupPublicHandler'));
 
 		// STILL NOT IMPLEMENTED
 		// Enable TinyMCE for body text area
-		//HookRegistry::register('TinyMCEPlugin::getEnableFields', array($this, 'enableTinyMCE'));
+		HookRegistry::register('TinyMCEPlugin::getEnableFields', array($this, 'enableTinyMCE'));
 
 		// STILL NOT IMPLEMENTED
 		// Editor page for editor access
@@ -162,6 +162,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 
     /*
      * Enable TinyMCE support for body text area.
+     */
     function enableTinyMCE($hookName, $params) {
         $fields = & $params[1];
         $page = Request::getRequestedPage();
@@ -170,7 +171,6 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
         if (strtolower($page) == $pageName && ($op == 'submitBody' || $op == 'saveBody')) $fields[] = 'articleBody';
         return false;
     }
-	*/
 }
 
 ?>
