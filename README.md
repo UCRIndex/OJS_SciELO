@@ -31,3 +31,5 @@ Pendientes:
 - back (referencias)
 
 (*) No se encontraron en ningún objeto (deben ser solicitados al usuario en una futura versión).
+
+- Existen errores al intentar implementar el menú para incluír los nuevos campos. Actualmente se están efectuando pruebas para recuperar la información desde el plugin ArticlesExtras, el cual se encuentra instalado en el servidor de pruebas (solución provisional).
