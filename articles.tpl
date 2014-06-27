@@ -15,7 +15,7 @@
 {/strip}
 
 <ul class="menu">
-	<li class="current"><a href="{url page="ojs2scielo" op="submitBody" path=$current}">Autores</a></li>
+	<li class="current"><a href="{url page="ojs2scielo" op="submitAuthorAdditionalFields" path=$current}">Autores</a></li>
 	{*<li><a href="{url page="ArticlesExtrasPlugin" op="submitBody" path=$current}">Cuerpo</a></li>
 	<li><a href="{url page="ArticlesExtrasPlugin" op="submitImages" path=$current}">Imagenes</a></li>
 	<li><a href="{url page="ArticlesExtrasPlugin" op="submitCitations" path=$current}">Citas</a></li>*}
