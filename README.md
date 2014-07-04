@@ -1,5 +1,5 @@
 # OJS_Scielo Plugin
-Modificación del plugin "native" para exportar a SciELO.
+<p>Modificación del plugin "native" para exportar a SciELO.</p>
 
 Dudas sobre el esquema SciELO:
 ==============================
