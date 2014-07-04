@@ -14,6 +14,8 @@
  * Edited by Vicerrectoría de investigación - Universidad de Costa Rica.
  */
 
+import('classes.plugins.ImportExportPlugin');
+
 class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 
 	/* 
