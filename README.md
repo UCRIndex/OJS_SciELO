@@ -32,7 +32,7 @@ Pendientes:
 
 (*) No se encontraron en ningún objeto (deben ser solicitados al usuario en una futura versión).
 
-- Existen errores al intentar implementar el menú para incluír los nuevos campos. Actualmente se están efectuando pruebas para recuperar la información desde el plugin ArticlesExtras, el cual se encuentra instalado en el servidor de pruebas (solución provisional).
+<p align="justify">Existen errores al intentar implementar el menú para incluír los nuevos campos. Actualmente se están efectuando pruebas para recuperar la información desde el plugin ArticlesExtras, el cual se encuentra instalado en el servidor de pruebas (solución provisional).</p>
 
 Actualización 04/07/2014:
 =========================
