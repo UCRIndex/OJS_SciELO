@@ -1,5 +1,5 @@
 # OJS_Scielo Plugin
-<p>Modificación del plugin "native" para exportar a SciELO.</p>
+<p align="justify">Modificación del plugin "native" para exportar a SciELO.</p>
 
 Dudas sobre el esquema SciELO:
 ==============================
@@ -30,7 +30,7 @@ Pendientes:
 - body (contenido del artículo)
 - back (referencias)
 
-(*) No se encontraron en ningún objeto (deben ser solicitados al usuario en una futura versión).
+<p align="justify">(*) No se encontraron en ningún objeto (deben ser solicitados al usuario en una futura versión).</p>
 
 <p align="justify">Existen errores al intentar implementar el menú para incluír los nuevos campos. Actualmente se están efectuando pruebas para recuperar la información desde el plugin ArticlesExtras, el cual se encuentra instalado en el servidor de pruebas (solución provisional).</p>
 
