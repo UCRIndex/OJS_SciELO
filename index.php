@@ -20,6 +20,4 @@ require_once('ojs2scieloImportExportPlugin.inc.php');
 
 return new Ojs2ScieloImportExportPlugin();
 
-
-
 ?>
