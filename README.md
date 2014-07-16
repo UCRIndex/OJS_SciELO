@@ -54,4 +54,5 @@ Actualización 15/07/2014:
 Actualización 16/07/2014:
 =========================
 
-<p align="justify">Se eliminó la clase de tipo Handler y el DAO creado dentro de este plugin. Inició el análisis del plugin crossref como referencia para comprobar los puntos expuestos ayer.</p>
+<p align="justify">Se eliminó la clase de tipo Handler y el DAO creado dentro de este plugin para volver a la versión original del plugin. Además, se eliminaron los campos del cuerpo con los cuales se comprobaba la compatibilidad del plugin con el DAO creado por ArticlesExtras (pruebas).</p>
+<p align="justify">Inició el análisis del plugin crossref con el fin de estudiar los puntos expuestos ayer. Se encontró que la estructura es muy similar a la actual y no cuenta con el manejo de eventos.</p>
