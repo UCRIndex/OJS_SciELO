@@ -57,3 +57,8 @@ Actualización 16/07/2014:
 <p align="justify">Se eliminó la clase de tipo Handler y el DAO creado dentro de este plugin para volver a la versión original del plugin. Además, se eliminaron los campos del cuerpo con los cuales se comprobaba la compatibilidad del plugin con el DAO creado por ArticlesExtras (pruebas).</p>
 <p align="justify">Inició el análisis del plugin crossref con el fin de estudiar los puntos expuestos ayer. Se encontró que la estructura es muy similar a la actual y no cuenta con el manejo de eventos. No fue de utilidad.</p>
 <p align="justify">Así mismo, se analizaron otros plugins de tipo import/export como por ejemplo el datacite, doaj, duracloud, erudit y medra y en ninguno de ellos se encontró el registro de una clase de tipo Handler para manejar eventos. De hecho, la estructura de estos plugins es muy similar a la del plugin estándar de import/export (sample), el cual en la fase de registro, solamente contempla los métodos de register, getName, getDisplayName, getDescription, display y usage. Por lo tanto, ninguno de estos plugins requiere el manejo de eventos mediante una clase de tipo Handle. El caso del plugin quickSubmit es distinto pues maneja datos nuevos; es necesario profundizar más en las funciones que permiten guardar información.</p>
+
+Actualización 17/07/2014:
+=========================
+
+<p align="justify">Se encontró un error en la presentación de los nombres del plugin. Se intentó recuperar con versiones anteriores del repositorio; sin embargo, no se ha podido solucionar. El error parece estar en el servidor de pruebas pues no se ha modificado la estructura interna del plugin en las últimas semanas.</p>
