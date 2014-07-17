@@ -61,4 +61,5 @@ Actualización 16/07/2014:
 Actualización 17/07/2014:
 =========================
 
-<p align="justify">Se encontró un error en la presentación de los nombres del plugin. Se intentó recuperar con versiones anteriores del repositorio; sin embargo, no se ha podido solucionar. El error parece estar en el servidor de pruebas pues no se ha modificado la estructura interna del plugin en las últimas semanas. (Problema a nivel local: trabajando en su reparación, en general, el plugin debería funcionar correctamente hasta lo especificado en la actualización del 15/07/2014)</p>
+<p align="justify">Se encontró un error en la presentación de los nombres del plugin. Se intentó recuperar con versiones anteriores del repositorio; sin embargo, no se ha podido solucionar. El error parece estar en el servidor de pruebas pues no se ha modificado la estructura interna del plugin en las últimas semanas (el problema es a nivel local, en general, el plugin debería funcionar correctamente hasta lo especificado en la actualización del 15/07/2014).</p>
+<p align="justify">Parece haber una incompatibilidad con el plugin OJS_Citas, ya que al exportar el XML sin dicho plugin se efectúa correctamente y con el plugin se genera un error. Por el momento, esta situación quedará como pendiente para conversar sobre la situación porque no se ha podido solucionar estos errores.</p>
