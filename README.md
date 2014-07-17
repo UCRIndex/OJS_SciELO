@@ -61,4 +61,4 @@ Actualización 16/07/2014:
 Actualización 17/07/2014:
 =========================
 
-<p align="justify">Se encontró un error en la presentación de los nombres del plugin. Se intentó recuperar con versiones anteriores del repositorio; sin embargo, no se ha podido solucionar. El error parece estar en el servidor de pruebas pues no se ha modificado la estructura interna del plugin en las últimas semanas.</p>
+<p align="justify">Se encontró un error en la presentación de los nombres del plugin. Se intentó recuperar con versiones anteriores del repositorio; sin embargo, no se ha podido solucionar. El error parece estar en el servidor de pruebas pues no se ha modificado la estructura interna del plugin en las últimas semanas. (Problema a nivel local: trabajando en su reparación, en general, el plugin debería funcionar correctamente hasta lo especificado en la actualización del 15/07/2014)</p>
