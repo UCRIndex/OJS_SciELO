@@ -72,4 +72,4 @@ Actualización 18/07/2014:
 
 Actualización 22/07/2014:
 =========================
-Se solucionaron los problemas entre los plugins de citas y el de exportación de datos. El problema se encontraba en el caché del OJS.
+<p align="justify">Se solucionaron los problemas entre los plugins de citas y el de exportación de datos. El problema se encontraba en el caché del OJS. Se continúa en la investigación de los puntos mencionados en las actualizaciones anteriores, con el fin de determinar la mejor manera de implementar la obtención de datos.</p>
