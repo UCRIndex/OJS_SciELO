@@ -69,3 +69,7 @@ Actualización 17/07/2014:
 Actualización 18/07/2014:
 =========================
 <p align="justify">Se determinó que el plugin permite exportar correctamete los XML sin el plugin OJS_Citas. Se comentó la situación con Jairo y se eliminó temporalmente el plugin de citas. La parte de cargar el nombre y la información básica (locale) parece ser un problema generalizado del servidor de pruebas, pues se encontraron errores similares en el panel derecho de varios plugins (no resuelto aún).</p>
+
+Actualización 22/07/2014:
+=========================
+Se solucionaron los problemas entre los plugins de citas y el de exportación de datos. El problema se encontraba en el caché del OJS.
