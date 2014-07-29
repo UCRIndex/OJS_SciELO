@@ -19,23 +19,23 @@ import('lib.pkp.classes.xml.XMLCustomWriter');
 define('NATIVE_DTD_URL', 'http://pkp.sfu.ca/ojs/dtds/2.3/native.dtd');
 define('NATIVE_DTD_ID', '-//PKP//OJS Articles and Issues XML//EN');
 
-/*
+/**
  * This class exports an article to a XML document using the XMLCustomWriter class already implemented (for more information about
  * the creation of nodes and attributes: http://pkp.sfu.ca/ojs/doxygen/stable/html/XMLCustomWriter_8inc_8php_source.html).
  * Note: each string that contains 'add' plus the attibute (node name) must be replace with the corresponding information.
  */
 class Ojs2ScieloExportDom extends ImportExportPlugin {
-	/*
+	/**
 	 * exportArticle creates the XML document, adds the front node to the document (with its children), adds the body
 	 * node to the document (with its children), adds the back node to the document (with its children) and finally
 	 * exports the XML.
 	 * This method gets five parameters that contain the corresponding journal, issue, section, and article (objects) chosen
 	 * by the user.
-	 * $journal refers to the journal that contains the selected article (object).
-	 * $issue refers to the journal issue (object).
-	 * $section refers to the section of the journal (object).
-	 * $article refers to the selected article (object),
-	 * $outputFile refers to the output type.
+	 * @param $journal refers to the journal that contains the selected article (object).
+	 * @param $issue refers to the journal issue (object).
+	 * @param $section refers to the section of the journal (object).
+	 * @param $article refers to the selected article (object),
+	 * @param $outputFile refers to the output type.
 	 */
 function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = null) {	
 		// For the creation of the document the function needs the DTD and its URL (root).
@@ -66,13 +66,13 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		Ojs2ScieloExportDom::exportXML($article, $doc, $outputFile);
 	}
 
-	/*
+	/**
 	 * Prepares the structure for the "front" node. Each node is created and the attributes are attached to its
 	 * corresponding node.
-	 * @$journal contains the journal data of the article (object).
-	 * @$article contains the article chosen by the user (object).
-	 * @$doc contains the XML document created by the XMLCustomWriter class (XML document).
-	 * @$header contains the first node of the document (XML node).
+	 * @param $journal contains the journal data of the article (object).
+	 * @param $article contains the article chosen by the user (object).
+	 * @param $doc contains the XML document created by the XMLCustomWriter class (XML document).
+	 * @param $header contains the first node of the document (XML node).
 	 */
 	private function addFrontNode(&$journal, &$article, &$doc, &$header, &$issue) {
 		$frontNode =& XMLCustomWriter::createElement($doc, 'front'); // Front node.
@@ -153,7 +153,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		Ojs2ScieloExportDom::addCounts($doc, $articleMetaNode); // Attaches the Counts group of nodes to the XML document.
 	}
 	
-	/*
+	/**
 	 * This method adds the body node to the XML document. For now, it just contains the basic node.
 	 * Here, the nodes are tied to the content of the document, so there must be a strategy to extract the body from the document and
 	 * transform these sections into nodes (paragraphs, titles, tables, etc.).
@@ -163,7 +163,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		XMLCustomWriter::appendChild($header, $bodyNode);
 	}
 	
-	/*
+	/**
 	 * addBackNode creates the structure for the "back" node. For now, it just has the basic requirements, but later some of these
 	 * groups of nodes must be replicated; for instance: "ref-list". This is directly related to the content of the documents.
 	 */
@@ -224,12 +224,12 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$sourceRefNode =& XMLCustomWriter::createChildWithText($doc, $refNode, 'mixed-citation', 'addmixed-citation', false); // Mixed-citation node.
 	}
 
-	/*
+	/**
 	 * This function gets and adds the nodes that correspond to the abstract of the document. Still, this function is incomplete: for the SciELO schema this function needs
 	 * to add each html node within the abstract of the document (check the SciELO XML document).
-	 * @$doc: XML document created by XMLCustomWriter.
-	 * @$article: selected journal (object).
-	 * @$articleMetaNode: XML node (father node).
+	 * @param $doc: XML document created by XMLCustomWriter.
+	 * @param $article: selected journal (object).
+	 * @param $articleMetaNode: XML node (father node).
 	 */
 	private function addAbstract(&$doc, &$article, &$articleMetaNode) {
 		if (is_array($article->getAbstract(null))) foreach ($article->getAbstract(null) as $locale => $abstract) {
@@ -242,11 +242,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		}
 	}
 
-	/*
+	/**
 	 * This function gets and adds the journal nodes to the XML tree. It is used inside "addFrontNode".
-	 * @$doc: XML document created by XMLCustomWriter.
-	 * @$frontNode: XML front node (father node).
-	 * @$journal: selected journal (object).
+	 * @param $doc: XML document created by XMLCustomWriter.
+	 * @param $frontNode: XML front node (father node).
+	 * @param $journal: selected journal (object).
 	 */
 	private function addJournalMeta(&$doc, &$frontNode, &$journal, &$article) {
 		$journalMetaNode =& XMLCustomWriter::createElement($doc, 'journal-meta'); // Journal-meta node.
@@ -275,11 +275,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$publisherNameNode =& XMLCustomWriter::createChildWithText($doc, $publisherNode, 'publisher-name', $journal->getSetting('publisherInstitution'), false); // Publisher-name node.
 	}
 	
-	/*
+	/**
 	 * This function gets and adds the publication date nodes to the XML tree. It is used inside "addFrontNode".
-	 * @$doc: XML document created by XMLCustomWriter.
-	 * @$articleMetaNode: XML node (father node).
-	 * @$article: selected journal (object).
+	 * @param $doc: XML document created by XMLCustomWriter.
+	 * @param $articleMetaNode: XML node (father node).
+	 * @param $article: selected journal (object).
 	 */
 	private function addPubDate(&$doc, &$articleMetaNode, &$article) {
 		$pubDateNode =& XMLCustomWriter::createElement($doc, 'pub-date'); // Pub-date node.
@@ -293,11 +293,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$yearNode =& XMLCustomWriter::createChildWithText($doc, $pubDateNode, 'year', $year, false); // Year node.
 	}
 	
-	/*
+	/**
 	 * This function gets and adds the history nodes to the XML tree. It is used inside "addFrontNode". The parameter list must
 	 * be modified in order to add content to the nodes.
-	 * @$doc: XML document created by XMLCustomWriter.
-	 * @$articleMetaNode: XML node (father node).
+	 * @param $doc: XML document created by XMLCustomWriter.
+	 * @param $articleMetaNode: XML node (father node).
 	 */
 	private function addHistory(&$doc, &$articleMetaNode, &$issue) {
 		$historyNode =& XMLCustomWriter::createElement($doc, 'history'); // History node.
@@ -324,11 +324,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$yearAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'year', 'addyear', false); // Year-accepted node.
 	}
 	
-	/*
+	/**
 	 * This function gets and adds the counts nodes to the XML tree. It is used inside "addFrontNode". The parameter list must
 	 * be modified in order to add content to the nodes.
-	 * @$doc: XML document created by XMLCustomWriter.
-	 * @$articleMetaNode: XML node (father node).
+	 * @param $doc: XML document created by XMLCustomWriter.
+	 * @param $articleMetaNode: XML node (father node).
 	 */
 	private function addCounts(&$doc, &$articleMetaNode) {
 		$countsNode =& XMLCustomWriter::createElement($doc, 'counts'); // Counts node.
@@ -351,11 +351,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		XMLCustomWriter::appendChild($countsNode, $pageCountNode);
 	}
 	
-	/*
+	/**
 	 * This function gets and adds the funding group nodes to the XML tree. It is used inside "addFrontNode". The parameter list must
 	 * be modified in order to add content to the nodes.
-	 * @$doc: XML document created by XMLCustomWriter.
-	 * @$articleMetaNode: XML node (father node).
+	 * @param $doc: XML document created by XMLCustomWriter.
+	 * @param $articleMetaNode: XML node (father node).
 	 */
 	private function addFundingGroup(&$doc, &$articleMetaNode, $article) {
 		$fundingGroupNode =& XMLCustomWriter::createElement($doc, 'funding-group'); // Funding-group node.
@@ -369,11 +369,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$awardIDNode =& XMLCustomWriter::createChildWithText($doc, $awardGroupNode, 'award-id', 'addaward-id', false); // Award-id node.
 	}
 	
-	/*
+	/**
 	 * This function gets and adds the funding group nodes to the XML tree. It is used inside "addFrontNode". The parameter list must
 	 * be modified in order to add content to the nodes.
-	 * @$doc: XML document created by XMLCustomWriter.
-	 * @$articleMetaNode: XML node (father node).
+	 * @param $doc: XML document created by XMLCustomWriter.
+	 * @param $articleMetaNode: XML node (father node).
 	 */
 	private function addPermissions(&$doc, &$articleMetaNode) {
 		$permissionsNode =& XMLCustomWriter::createElement($doc, 'permissions'); // Permissions node.
@@ -387,10 +387,10 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$licensePNode =& XMLCustomWriter::createChildWithText($doc, $licenseNode, 'license-p', 'addlicense-p', false); // License-p node.
 	}
 	
-	/*
+	/**
 	 * Searches for the ISSN of a journal. The function excecutes three queries: print ISSN, ISSN or online ISSN; otherwise, it returns
 	 * an empty variable.
-	 * @journal refers to the selected journal.
+	 * @param $journal refers to the selected journal.
 	 * @return the ISSN of the publication or an empty value if it was not found.
 	 */
 	private function getISSN(&$journal) {
@@ -401,11 +401,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		return $issn;
 	}
 	
-	/*
+	/**
 	 * This function obtains the title or titles of an article and adds them to the tree of nodes.
-	 * @$doc XML document created by XMLCustomWriter.
-	 * @$article from where the titles are going to be extracted.
-	 * @$titleGroupNode father node.
+	 * @param $doc XML document created by XMLCustomWriter.
+	 * @param $article from where the titles are going to be extracted.
+	 * @param $titleGroupNode father node.
 	 */
 	private function getArticleTitle(&$doc, &$article, &$titleGroupNode) {
 		// Checks if the article contains more than one title.
@@ -429,11 +429,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		}
 	}
 	
-	/*
+	/**
 	 * This function obtains the author or authors of an article and adds them to the tree of nodes.
-	 * @$doc XML document created by XMLCustomWriter.
-	 * @$article from where the authors are going to be extracted.
-	 * @$contribGroupNode father node.
+	 * @param $doc XML document created by XMLCustomWriter.
+	 * @param $article from where the authors are going to be extracted.
+	 * @param $contribGroupNode father node.
 	 */
 	private function getArticleAuthors(&$doc, &$article, &$contribGroupNode) {
 		$i = 1; // Integer that indicates the position of the author in the XML tree.
@@ -465,11 +465,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		}
 	}
 	
-	/*
+	/**
 	 * This function obtains the affiliation an author and adds them to the tree of nodes.
-	 * @$doc XML document created by XMLCustomWriter.
-	 * @$article from where the affiliations are going to be extracted.
-	 * @$articleMetaNode father node.
+	 * @param $doc XML document created by XMLCustomWriter.
+	 * @param $article from where the affiliations are going to be extracted.
+	 * @param $articleMetaNode father node.
 	 */
 	private function getAuthorsAffiliation(&$doc, &$article, &$articleMetaNode) {
 		$j = 1; // Integer that indicates the position of the affiliation of an author in the XML tree. In order to make sense, this variable and the one in the function "getArticleAuthors" must match.
@@ -529,10 +529,10 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		}
 	}
 	
-	/*
+	/**
 	 * Since the SciELO's schema requieres a season (name of the month) for the publication date, there must be a casting. This function
 	 * obtains the corresponding numbrer of the month and returns the initials of the month.
-	 * @$article from where the season is going to be extracted.
+	 * @param $article from where the season is going to be extracted.
 	 * @return initials of the month or an empty variable if there is an error.
 	 */
 	private function getSeason(&$article) {
@@ -581,11 +581,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		return $season;
 	}
 	
-	/*
+	/**
 	 * After the tree of nodes is completed, this method exports it into the XML file.
-	 * @$article refers to the selected article (object).
-	 * @$doc refers to the XML document.
-	 * @$outputFile refers to the output type.
+	 * @param $article refers to the selected article (object).
+	 * @param $doc refers to the XML document.
+	 * @param $outputFile refers to the output type.
 	 */
 	private function exportXML(&$article, &$doc, $outputFile = null) {
 		if (!empty($outputFile)) {
