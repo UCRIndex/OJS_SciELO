@@ -18,7 +18,7 @@ import('classes.plugins.ImportExportPlugin');
 
 class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 
-	/* 
+	/**
 	 * Called as a plugin is registered to the registry.
 	 * @param $category String Name of category plugin was registered to.
 	 * @return boolean True if plugin initialized successfully; if false, the plugin will not be registered.
@@ -29,7 +29,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 		return $success;
 	}
 	
-	/*
+	/**
 	 * Displays the command-line usage information.
 	 */
 	function usage($scriptName) {
@@ -39,7 +39,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 		)) . "\n";
 	}
 
-	/*
+	/**
 	 * States the name of the plugin. This name must be unique in its category.
 	 * @return String name of the plugin.
 	 */
@@ -47,7 +47,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 		return 'ojs2scieloImportExportPlugin';
 	}
 
-	/*
+	/**
 	 * This method returns the name of the plugin that is shown at the import/export page. This name is found at the 
 	 * locale corresponding file.
 	 * @return String name of the plugin.
@@ -56,7 +56,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 		return __('plugins.importexport.ojs2scielo.displayName');
 	}
 
-	/*
+	/**
 	 * This method returns the description of the plugin that is shown at the import/export page. This description is
 	 * found at the locale corresponding file.
 	 * @return String description of the plugin.
@@ -65,7 +65,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 		return __('plugins.importexport.ojs2scielo.description');
 	}
 	
-	/*
+	/**
 	 * This method parses a specific file with the XMLParser already implemented at OJS. This would be helpful when
 	 * the switch structure is completed.
 	 * @return XML Parsed document.
@@ -76,7 +76,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 		return $returner;
 	}
 
-	/*
+	/**
 	 * Returns the name of the root node (this root refers to the main note at the XML document). This would be
 	 * helpful when the switch structure is completed.
 	 * @return String name of the main node.
@@ -85,7 +85,7 @@ class Ojs2ScieloImportExportPlugin extends ImportExportPlugin {
 		return $doc->name;
 	}
 	
-	/*
+	/**
 	 * This method contains the functionality of the plugin. For now, the switch structure comprises just the 'export
 	 * article' option. Later, it should be added the options for the management of issues ('exportIssues',
 	 * 'exportIssue', 'issues') as well as the option for import. At this moment, the issue options should behave
