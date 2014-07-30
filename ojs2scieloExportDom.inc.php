@@ -504,19 +504,26 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 				unset($orgNameNode);
 			}
 
-			//$articlesExtrasDao =& new ArticlesExtrasDAO();
-			//$zipcode = $articleExtrasDao->getAuthorMetadataByAuthorId(, 'aff_zipcode')
-			
-			$zipCodeNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $zipcode, false); // Zipcode node.
+			$articlesExtrasDao =& new ArticlesExtrasDAO();
+
+			$zipCode = $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_zipcode');
+			$zipCodeNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $zipCode, false); // Zipcode node.
 			XMLCustomWriter::setAttribute($zipCodeNode, 'content-type', 'zipcode');
-			
-			$cityNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', 'addcity', false); // City node.
+
+			$city = $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_city');
+			$cityNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $city, false); // City node.
 			XMLCustomWriter::setAttribute($cityNode, 'content-type', 'city');
 			
-			$stateNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', 'addstate', false); // State node.
+			$state = $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_state');
+			$stateNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $state, false); // State node.
 			XMLCustomWriter::setAttribute($stateNode, 'content-type', 'state');
 			
-			$addrNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'addr-line', 'addaddr-line', false); // Addr-line node.
+			$addr = $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_orgdiv1');
+			$addr .= '; ';
+			$addr .= $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_orgdiv2');
+			$addr .= '; ';
+			$addr .= $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_orgdiv3');
+			$addrNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'addr-line', $addr, false); // Addr-line node.
 			
 			$countryNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'country', $author->getCountry(), false); // Country node.
 			
@@ -525,6 +532,10 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 			$j++; // Increments the number of authors.
 			
 			// Releases the nodes (variables) for the next iteration.
+			unset($zipCode);
+			unset($city);
+			unset($state);
+			unset($addr);
 			unset($affGroupNode);
 			unset($labelNode);
 			unset($zipCodeNode);
