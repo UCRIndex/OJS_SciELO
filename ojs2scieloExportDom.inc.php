@@ -83,9 +83,11 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$articleMetaNode =& XMLCustomWriter::createElement($doc, 'article-meta'); // Article-meta node.
 		XMLCustomWriter::appendChild($frontNode, $articleMetaNode);
 		
-		$publisherIDNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'article-id', $article->getPublishedArticleId(), false); // Article-id (publisher-id) node.
-		XMLCustomWriter::setAttribute($publisherIDNode, 'pub-id-type', 'publisher-id');
-		
+		if($article->getPublishedArticleId() != '') {
+			$publisherIDNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'article-id', $article->getPublishedArticleId(), false); // Article-id (publisher-id) node.
+			XMLCustomWriter::setAttribute($publisherIDNode, 'pub-id-type', 'publisher-id');
+		}
+
 		$publisherIDNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'article-id', 'adddoi', false); // Article-id (doi) node.
 		XMLCustomWriter::setAttribute($publisherIDNode, 'pub-id-type', 'doi');
 		
@@ -122,10 +124,10 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		
 		Ojs2ScieloExportDom::addPubDate($doc, $articleMetaNode, $article); // Attaches the Pub-date group of nodes to the XML document.
 		
-		$volumeNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'volume', $issue->getVolume(), false); // Volume node.
-		
-		$issueNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'issue', $issue->getNumber(), false); // Issue node.
-		
+		if($issue->getVolume() != '') $volumeNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'volume', $issue->getVolume(), false); // Volume node.
+
+		if($issue->getNumber() != '') $issueNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'issue', $issue->getNumber(), false); // Issue node.
+
 		$fPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'fpage', 'addfpage', false); // Fpage node.
 		
 		$lPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'lpage', 'addlpage', false); // Lpage node.
@@ -161,10 +163,10 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	private function addBodyNode(&$article, &$doc, &$header, &$issue) {
 		$bodyNode =& XMLCustomWriter::createElement($doc, 'body'); // Body node.
 		XMLCustomWriter::appendChild($header, $bodyNode);
-
+		
 		$articlesExtrasDao =& new ArticlesExtrasDAO();
 		$body = $articlesExtrasDao->getArticleBody($article->getArticleId());
-		$textNode =& XMLCustomWriter::createChildWithText($doc, $bodyNode, 'body', $body, false);
+		if($body != '') $textNode =& XMLCustomWriter::createChildWithText($doc, $bodyNode, 'body', $body, false);
 	}
 	
 	/*
@@ -256,13 +258,15 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		$journalMetaNode =& XMLCustomWriter::createElement($doc, 'journal-meta'); // Journal-meta node.
 		XMLCustomWriter::appendChild($frontNode, $journalMetaNode);
 
-		$journalIDNode =& XMLCustomWriter::createChildWithText($doc, $journalMetaNode, 'journal-id', $journal->getJournalId(), false); // Journal-id node.
-		XMLCustomWriter::setAttribute($journalIDNode, 'journal-id-type', 'nlm-ta');
+		if($journal->getJournalId() != '') {
+			$journalIDNode =& XMLCustomWriter::createChildWithText($doc, $journalMetaNode, 'journal-id', $journal->getJournalId(), false); // Journal-id node.
+			XMLCustomWriter::setAttribute($journalIDNode, 'journal-id-type', 'nlm-ta');
+		}
 
 		$journalTitleGroupNode =& XMLCustomWriter::createElement($doc, 'journal-title-group'); // Journal-title-group node.
 		XMLCustomWriter::appendChild($journalMetaNode, $journalTitleGroupNode);
 
-		$journalTitleNode =& XMLCustomWriter::createChildWithText($doc, $journalTitleGroupNode, 'journal-title', $journal->getLocalizedTitle(), false); // Journal-title node.
+		if($journal->getLocalizedTitle() != '') $journalTitleNode =& XMLCustomWriter::createChildWithText($doc, $journalTitleGroupNode, 'journal-title', $journal->getLocalizedTitle(), false); // Journal-title node.
 		
 		// At this point, there is an optional node for the translation of the title. It might be added to the document.
 		
@@ -449,9 +453,9 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 			$nameNode =& XMLCustomWriter::createElement($doc, 'name'); // Name node.
 			XMLCustomWriter::appendChild($contribNode, $nameNode);
 			
-			$surnameNode =& XMLCustomWriter::createChildWithText($doc, $nameNode, 'surname', $author->getFirstName(), false); // Surname node.
+			if($author->getFirstName() != '') $surnameNode =& XMLCustomWriter::createChildWithText($doc, $nameNode, 'surname', $author->getFirstName(), false); // Surname node.
 			
-			$givenNamesNode =& XMLCustomWriter::createChildWithText($doc, $nameNode, 'given-names', $author->getLastName(), false); // Given-names node.
+			if($author->getLastName() != '') $givenNamesNode =& XMLCustomWriter::createChildWithText($doc, $nameNode, 'given-names', $author->getLastName(), false); // Given-names node.
 			
 			$rid = "aff" . $i; // Concatenation of "aff" plus the position of the author. This label corresponds to the schema developed by SciELO.
 			$affLinkNode =& XMLCustomWriter::createChildWithText($doc, $contribNode, 'xref', $i, false); // Xref node.
@@ -507,35 +511,45 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 			$articlesExtrasDao =& new ArticlesExtrasDAO();
 
 			$zipCode = $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_zipcode');
-			$zipCodeNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $zipCode, false); // Zipcode node.
-			XMLCustomWriter::setAttribute($zipCodeNode, 'content-type', 'zipcode');
+			
+			if($zipcode != '') {
+				$zipCodeNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $zipCode, false); // Zipcode node.
+				XMLCustomWriter::setAttribute($zipCodeNode, 'content-type', 'zipcode');
+			}
+
+			unset($zipCode);
 
 			$city = $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_city');
-			$cityNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $city, false); // City node.
-			XMLCustomWriter::setAttribute($cityNode, 'content-type', 'city');
 			
+			if($city != '') {
+				$cityNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $city, false); // City node.
+				XMLCustomWriter::setAttribute($cityNode, 'content-type', 'city');
+			}
+
+			unset($city);
+
 			$state = $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_state');
-			$stateNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $state, false); // State node.
-			XMLCustomWriter::setAttribute($stateNode, 'content-type', 'state');
 			
-			$addr = $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_orgdiv1');
-			$addr .= '; ';
-			$addr .= $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_orgdiv2');
-			$addr .= '; ';
-			$addr .= $articlesExtrasDao->getAuthorMetadataByAuthorId($author->getId(), 'aff_orgdiv3');
-			$addrNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'addr-line', $addr, false); // Addr-line node.
+			if($state != '') {
+				$stateNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'named-content', $state, false); // State node.
+				XMLCustomWriter::setAttribute($stateNode, 'content-type', 'state');
+			}
+
+			unset($state);
+
+			$addr = Ojs2ScieloExportDom::getAddr($author);
+
+			if($addr != '') $addrNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'addr-line', $addr, false); // Addr-line node.
 			
-			$countryNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'country', $author->getCountry(), false); // Country node.
+			unset($addr);
+
+			if($author->getCountry() != '') $countryNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'country', $author->getCountry(), false); // Country node.
 			
-			$institutionalEmailNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'email', $author->getEmail(), false); // Email node.
+			if($author->getEmail() != '') $institutionalEmailNode =& XMLCustomWriter::createChildWithText($doc, $affGroupNode, 'email', $author->getEmail(), false); // Email node.
 
 			$j++; // Increments the number of authors.
 			
 			// Releases the nodes (variables) for the next iteration.
-			unset($zipCode);
-			unset($city);
-			unset($state);
-			unset($addr);
 			unset($affGroupNode);
 			unset($labelNode);
 			unset($zipCodeNode);
@@ -545,6 +559,25 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 			unset($countryNode);
 			unset($institutionalEmailNode);	
 		}
+	}
+
+	private function getAddr(&$author) {
+		$articlesExtrasDao =& new ArticlesExtrasDAO();
+		$id = $author->getId();
+		$addr = '';
+
+		if($articlesExtrasDao->getAuthorMetadataByAuthorId($id, 'aff_orgdiv1') != '') $addr = $articlesExtrasDao->getAuthorMetadataByAuthorId($id, 'aff_orgdiv1');
+		if($articlesExtrasDao->getAuthorMetadataByAuthorId($id, 'aff_orgdiv2') != '') {
+			if($addr == '') $addr = $articlesExtrasDao->getAuthorMetadataByAuthorId($id, 'aff_orgdiv2');
+			else $addr .= '; '; $addr .= $articlesExtrasDao->getAuthorMetadataByAuthorId($id, 'aff_orgdiv2');
+		}
+
+		if($articlesExtrasDao->getAuthorMetadataByAuthorId($id, 'aff_orgdiv3') != '') {
+			if($addr == '') $addr = $articlesExtrasDao->getAuthorMetadataByAuthorId($id, 'aff_orgdiv3');
+			else $addr .= '; '; $addr .= $articlesExtrasDao->getAuthorMetadataByAuthorId($id, 'aff_orgdiv3');
+		}
+
+		return $addr;
 	}
 	
 	/*
@@ -616,7 +649,14 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 			header("Content-Disposition: attachment; filename=\"article-" . $article->getId() . ".xml\""); // Name & extension of the file.
 			XMLCustomWriter::printXML($doc);
 		}
-	}	
+	}
+
+	private function isArticlesExtrasInstalled() {
+            //$articlesExtrasPlugin =& PluginRegistry::getPlugin('generic', 'ArticlesExtrasPlugin');
+            //if($articlesExtrasPlugin) return true;
+            //return false;
+
+    }
 }
 
 ?>
