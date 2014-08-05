@@ -132,7 +132,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		
 		$lPageNode =& XMLCustomWriter::createChildWithText($doc, $articleMetaNode, 'lpage', 'addlpage', false); // Lpage node.
 		
-		Ojs2ScieloExportDom::addHistory($doc, $articleMetaNode, $issue); // Attaches the History group of nodes to the XML document.
+		Ojs2ScieloExportDom::addHistory($doc, $articleMetaNode, $issue, $article); // Attaches the History group of nodes to the XML document.
 		
 		Ojs2ScieloExportDom::addPermissions($doc, $articleMetaNode); // Attaches the Permissions group of nodes to the XML document.
 
@@ -316,7 +316,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 * @param $articleMetaNode XML node (father node).
 	 * @param $issue Object.
 	 */
-	private function addHistory(&$doc, &$articleMetaNode, &$issue) {
+	private function addHistory(&$doc, &$articleMetaNode, &$issue, &$article) {
 		$historyNode =& XMLCustomWriter::createElement($doc, 'history'); // History node.
 		XMLCustomWriter::appendChild($articleMetaNode, $historyNode);
 		
@@ -324,21 +324,57 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 		XMLCustomWriter::setAttribute($dateTypeRecivedNode, 'date-type', 'received');
 		XMLCustomWriter::appendChild($historyNode, $dateTypeRecivedNode);
 		
-		$dayRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'day', 'addday', false); // Day-received node.
+		$articlesExtrasDao =& new ArticlesExtrasDAO();
+		$dateReceived = $articlesExtrasDao->getDateReceived($article->getArticleId());
+
+		$dayRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'day', Ojs2ScieloExportDom::getDayFromDate($dateReceived), false); // Day-received node.
 		
-		$monthRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'month', 'addmonth', false); // Month-received node.
+		$monthRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'month', Ojs2ScieloExportDom::getMonthFromDate($dateReceived), false); // Month-received node.
 		
-		$yearRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'year', 'addyear', false); // Year-received node.
+		$yearRecivedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeRecivedNode, 'year', Ojs2ScieloExportDom::getYearFromDate($dateReceived), false); // Year-received node.
 		
 		$dateTypeAcceptedNode =& XMLCustomWriter::createElement($doc, 'date'); // Date-type accepted node.
 		XMLCustomWriter::setAttribute($dateTypeAcceptedNode, 'date-type', 'accepted');
 		XMLCustomWriter::appendChild($historyNode, $dateTypeAcceptedNode);
+
+		//$dateAccepted = $articlesExtrasDao->getDateReceived($article->getArticleId());
 		
-		$dayAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'day', 'addday', false); // Day-accepted node.
+		//$dayAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'day', $dateAccepted, false); // Day-accepted node.
 		
-		$monthAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'month', 'addmonth', false); // Month-accepted node.
+		//$monthAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'month', Ojs2ScieloExportDom::getMonthFromDate($dateAccepted), false); // Month-accepted node.
 		
-		$yearAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'year', 'addyear', false); // Year-accepted node.
+		//$yearAcceptedNode =& XMLCustomWriter::createChildWithText($doc, $dateTypeAcceptedNode, 'year', Ojs2ScieloExportDom::getYearFromDate($dateAccepted), false); // Year-accepted node.
+	}
+
+	/**
+	 * It extracts the day from the string in date format.
+	 * @param $date (YYYY-MM-DD hh:mm:ss)
+	 * @return integer
+	 */
+	private function getDayFromDate(&$date) {
+		for($i = 8; $i < 10; $i++) $day .= $date[$i]; // 8 & 9 indicate the day.
+		return $day;
+	}
+
+	/**
+	 * It extracts the month from the string in date format.
+	 * @param $date (YYYY-MM-DD hh:mm:ss)
+	 * @return integer
+	 */
+	private function getMonthFromDate(&$date) {
+		for($i = 5; $i < 7; $i++) $month .= $date[$i]; // 5 & 6 indicate the month.
+		$season = Ojs2ScieloExportDom::monthToSeason((int)$month); // Transforms the number of the month into its initials.
+		return $season;
+	}
+
+	/**
+	 * It extracts the year from the string in date format.
+	 * @param $date (YYYY-MM-DD hh:mm:ss)
+	 * @return integer
+	 */
+	private function getYearFromDate(&$date) {
+		for($i = 0; $i < 4; $i++) $year .= $date[$i]; // Gets the first 4 characters (year).
+		return $year;
 	}
 	
 	/**
@@ -573,7 +609,7 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 
 	/**
 	 * It gets the author's address.
-	 * @param &$author Author object.
+	 * @param $author Author object.
 	 * @return Author's address(es).
 	 */
 	private function getAddr(&$author) {
@@ -603,7 +639,13 @@ function exportArticle(&$journal, &$issue, &$section, &$article, $outputFile = n
 	 */
 	private function getSeason(&$article) {
 		$m = date('m', strtotime($article->getDatePublished())); // Gets the number of the month by using the label 'm'.
-		switch ($m) {
+		$season = Ojs2ScieloExportDom::monthToSeason($m);
+		return $season;
+	}
+
+	private function monthToSeason($month) {
+		$season = "";
+		switch ($month) {
     			case 1:
         			$season = "Jan";
         			break;
