@@ -32,4 +32,4 @@ Pendientes:
 
 <p align="justify">(*) No se encontraron en ningún objeto (deben ser solicitados al usuario en una futura versión).</p>
 
-Agregar un condicional para que se pueda exportar el XML en caso de que el campo no exista.
+Revisar la fecha de aceptado de un documento (consulta DAO).
